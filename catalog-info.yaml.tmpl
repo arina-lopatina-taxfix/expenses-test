@@ -1,0 +1,11 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: {{ .appName }}
+  description: ""
+spec:
+  type: library
+  lifecycle: experimental
+  domain: {{ .domain }}
+  system: {{ .system }}
+  owner: {{ .owner }}

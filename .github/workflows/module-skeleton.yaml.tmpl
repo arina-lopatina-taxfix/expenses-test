@@ -1,0 +1,24 @@
+name: Taxfix CI/CD Workflow [{{ .appName }}]
+
+on:
+  push:
+    branches:  
+      - master
+      - main
+      - preview-*
+    paths:
+      - '**'
+    tags: 
+      - 'v*.*.*'
+  pull_request:
+    branches:  
+      - master
+      - main
+    paths:
+        - '**'
+  workflow_dispatch:
+
+jobs:
+  taxfix-ci-cd:
+    uses: 'taxfix/actions/.github/workflows/npm-package--common-targets.yml@main'
+    secrets: inherit

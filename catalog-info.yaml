@@ -1,0 +1,11 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: module-skeleton
+  description: ""
+spec:
+  type: library
+  lifecycle: deprecated
+  domain: tech-foundation
+  system: dev-tools-infra
+  owner: architecture
