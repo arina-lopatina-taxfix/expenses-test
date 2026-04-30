@@ -1,0 +1,30 @@
+{
+  "name": "@taxfix/expenses-test",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Expenses flow prototype implementing the Filing Experience designs.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "test": "jest --config jest.config.js",
+    "lint": "eslint --ext .js,.ts,.tsx \"src/**\""
+  },
+  "author": "Engineering <engineering@taxfix.de>",
+  "license": "SEE LICENSE IN LICENSE.txt",
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.4",
+    "typescript": "~5.6.3",
+    "vite": "^5.4.11"
+  }
+}
