@@ -1,4 +1,5 @@
 import { AppBar } from '../components/AppBar';
+import { IdCardIcon } from '../components/IdCardIcon';
 import type { ScreenProps } from './types';
 
 export function Mistake({ restart }: ScreenProps) {
@@ -8,7 +9,7 @@ export function Mistake({ restart }: ScreenProps) {
       <main className="step">
         <div className="mistake">
           <div className="mistake__icon" aria-hidden="true">
-            🪪🔍
+            <IdCardIcon />
           </div>
           <h1 className="mistake__title">
             You can’t claim expenses for this income type
