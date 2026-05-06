@@ -27,7 +27,7 @@ export function BusinessNature({
               the services or products you offer
             </p>
           </header>
-          <div className="field" style={{ width: 312 }}>
+          <div className="field" style={{ width: 420 }}>
             <textarea
               className="field__textarea"
               placeholder="Label"

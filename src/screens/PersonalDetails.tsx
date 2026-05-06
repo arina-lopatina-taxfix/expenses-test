@@ -56,10 +56,9 @@ export function PersonalDetails({
             ))}
           </div>
           <button
-            className="btn btn--primary btn--lg"
+            className="btn btn--primary btn--lg btn--inline"
             type="button"
             onClick={goNext}
-            style={{ width: 312 }}
           >
             Continue
           </button>

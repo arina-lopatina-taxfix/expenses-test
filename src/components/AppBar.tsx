@@ -1,3 +1,5 @@
+import { TaxfixLogo } from './Logo';
+
 type AppBarProps = {
   variant?: 'full' | 'minimal';
   showLogin?: boolean;
@@ -8,7 +10,7 @@ export function AppBar({ variant = 'full', showLogin = true }: AppBarProps) {
     return (
       <header className="appbar">
         <div className="appbar__center">
-          <Logo />
+          <TaxfixLogo />
         </div>
       </header>
     );
@@ -16,7 +18,7 @@ export function AppBar({ variant = 'full', showLogin = true }: AppBarProps) {
   return (
     <header className="appbar">
       <div className="appbar__brand">
-        <Logo />
+        <TaxfixLogo />
         <span className="appbar__chip">TaxScouts is now Taxfix</span>
       </div>
       {showLogin && (
@@ -25,13 +27,5 @@ export function AppBar({ variant = 'full', showLogin = true }: AppBarProps) {
         </button>
       )}
     </header>
-  );
-}
-
-function Logo() {
-  return (
-    <span className="appbar__logo">
-      ta<span>x</span>fix
-    </span>
   );
 }
