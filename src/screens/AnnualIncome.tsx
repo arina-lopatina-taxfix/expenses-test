@@ -17,14 +17,14 @@ export function AnnualIncome({
       <Progress value={progress} />
       <Flourishes />
       <main className="step">
-        <div className="step__inner" style={{ gap: 24 }}>
+        <div className="step__inner step__inner--tight">
           <header className="step__heading">
             <h1 className="step__title">What is your annual income?</h1>
             <p className="step__subtitle">
               Enter your total income for 6 Apr 2024 - 5 Apr 2025 before tax
             </p>
           </header>
-          <div className="field" style={{ width: 312 }}>
+          <div className="field" style={{ width: 360 }}>
             <span className="field__label">Annual income</span>
             <div className="field__input-wrap">
               <input

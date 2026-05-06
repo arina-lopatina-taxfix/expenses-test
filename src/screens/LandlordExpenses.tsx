@@ -1,6 +1,5 @@
 import { AppBar } from '../components/AppBar';
 import { Progress } from '../components/Progress';
-import { Footer } from '../components/Footer';
 import { OptionCard } from '../components/OptionCard';
 import type { ScreenProps } from './types';
 
@@ -64,7 +63,6 @@ export function LandlordExpenses({
   state,
   update,
   goNext,
-  goBack,
   progress,
 }: ScreenProps) {
   const toggle = (id: string) => {
@@ -103,13 +101,15 @@ export function LandlordExpenses({
               />
             ))}
           </div>
+          <button
+            className="btn btn--primary btn--lg btn--inline"
+            type="button"
+            onClick={goNext}
+          >
+            Continue
+          </button>
         </div>
       </main>
-      <Footer
-        onBack={goBack}
-        primaryLabel="Continue"
-        onPrimary={goNext}
-      />
     </div>
   );
 }

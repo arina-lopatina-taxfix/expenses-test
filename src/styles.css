@@ -1,7 +1,9 @@
 /* Design tokens from Figma */
 :root {
   --primary-light: #36893b;
-  --primary-dark: #154618;
+  --primary-main: #154618;
+  --primary-action: #a0d766;
+  --primary-secondary-action: rgba(169, 212, 129, 0.4);
   --primary-soft: #cef5a4;
   --neutral-main: rgba(12, 11, 10, 0.8);
   --neutral-background: #f2efed;
@@ -13,8 +15,9 @@
   --text-primary: rgba(12, 11, 10, 0.8);
   --text-secondary: rgba(12, 11, 10, 0.65);
   --text-muted: rgba(12, 11, 10, 0.6);
-  --radius-card: 12px;
+  --radius-card: 16px;
   --radius-input: 4px;
+  --radius-pill: 9999px;
   --shadow-elevation-2:
     0 0 1px rgba(0, 0, 0, 0.08), 2px 4px 8px rgba(0, 0, 0, 0.08);
   --shadow-card: 0 0 1px rgba(0, 0, 0, 0.08), 2px 4px 16px rgba(0, 0, 0, 0.04);
@@ -99,12 +102,20 @@ button {
   width: 100%;
   background: var(--grey-graphics-10);
   overflow: hidden;
+  border-radius: 4px;
 }
 
 .progress__bar {
   height: 100%;
   background: var(--primary-light);
   transition: width 240ms ease;
+}
+
+/* contextual bar (white strip below progress to match Figma layout) */
+.contextual {
+  height: 36px;
+  background: var(--grey-surface-3);
+  width: 100%;
 }
 
 /* Buttons */
@@ -128,8 +139,8 @@ button {
 }
 
 .btn--primary {
-  background: var(--primary-soft);
-  color: var(--primary-dark);
+  background: var(--primary-action);
+  color: var(--primary-main);
 }
 .btn--primary:hover:not(:disabled) {
   filter: brightness(0.96);
@@ -137,8 +148,8 @@ button {
 
 .btn--secondary {
   background: transparent;
-  color: var(--primary-dark);
-  border: 1px solid var(--primary-dark);
+  color: var(--primary-main);
+  border: 1px solid var(--primary-main);
 }
 .btn--secondary:hover {
   background: rgba(21, 70, 24, 0.04);
@@ -156,12 +167,21 @@ button {
   height: 48px;
   padding: 0 24px;
   font-size: 16px;
+  line-height: 20px;
+  letter-spacing: 0;
 }
 
 .btn--md {
   height: 36px;
   padding: 0 16px;
   font-size: 14px;
+  line-height: 20px;
+}
+
+.btn--inline {
+  align-self: center;
+  min-width: 312px;
+  padding: 0 32px;
 }
 
 .btn-arrow {
@@ -236,6 +256,10 @@ button {
   z-index: 1;
 }
 
+.step__inner--tight {
+  gap: 24px;
+}
+
 .step__heading {
   display: flex;
   flex-direction: column;
@@ -250,6 +274,8 @@ button {
   line-height: 1.2;
   color: #000;
   margin: 0;
+  letter-spacing: 0;
+  text-align: center;
 }
 
 .step__subtitle {
@@ -257,6 +283,8 @@ button {
   line-height: 1.3;
   color: var(--text-muted);
   margin: 0;
+  max-width: 500px;
+  text-align: center;
 }
 
 /* Option cards (checkbox card list) */
@@ -275,8 +303,8 @@ button {
   padding: 16px 24px;
   background: #ffffff;
   border-radius: var(--radius-card);
-  border: 1px solid rgba(12, 11, 10, 0.08);
-  box-shadow: var(--shadow-card);
+  border: 1px solid transparent;
+  box-shadow: var(--shadow-elevation-2);
   cursor: pointer;
   width: 495px;
   max-width: 100%;
@@ -284,12 +312,12 @@ button {
 }
 
 .option:hover {
-  border-color: rgba(54, 137, 59, 0.5);
+  border-color: rgba(54, 137, 59, 0.4);
 }
 
 .option--selected {
   border-color: var(--primary-light);
-  box-shadow: var(--shadow-card), 0 0 0 1px var(--primary-light);
+  box-shadow: var(--shadow-elevation-2), inset 0 0 0 1px var(--primary-light);
 }
 
 .option__body {
@@ -352,7 +380,7 @@ button {
   transform: rotate(45deg) translate(-1px, -1px);
 }
 
-/* Text field */
+/* Text field — Material-style outlined */
 .field {
   display: flex;
   flex-direction: column;
@@ -362,13 +390,14 @@ button {
 
 .field__label {
   position: absolute;
-  top: -7px;
+  top: -8px;
   left: 12px;
   background: #ffffff;
   padding: 0 4px;
   font-size: 12px;
   line-height: 1;
   color: var(--text-secondary);
+  z-index: 1;
 }
 
 .field__input,
@@ -395,11 +424,6 @@ button {
 .field__textarea:focus {
   border-color: var(--primary-light);
   box-shadow: 0 0 0 1px var(--primary-light);
-}
-
-.field--with-suffix {
-  display: flex;
-  align-items: center;
 }
 
 .field__input-wrap {
@@ -452,6 +476,14 @@ button {
   line-height: 1.2;
   margin: 0;
   color: #000;
+  white-space: nowrap;
+  letter-spacing: 0;
+}
+
+@media (max-width: 720px) {
+  .mistake__title {
+    white-space: normal;
+  }
 }
 
 .mistake__desc {
@@ -465,11 +497,10 @@ button {
 
 .mistake__icon {
   width: 220px;
-  height: 180px;
+  height: 170px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 96px;
 }
 
 .mistake__actions {
