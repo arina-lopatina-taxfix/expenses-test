@@ -1,9 +1,19 @@
-import type { AnalysisInput, AnalysisResponse } from '../src/shared/analysis';
+import type {
+  AnalysisInput,
+  AnalysisResponse,
+} from '../src/shared/analysis';
+import {
+  INCOME_SOURCE_LABELS,
+  LANDLORD_CATEGORIES,
+  PERSONAL_DETAIL_LABELS,
+  SELF_EMPLOYED_CATEGORIES,
+  resolveLandlordCategory,
+  resolveSelfEmployedCategory,
+} from '../src/shared/categories';
 
 export const config = { runtime: 'edge' };
 
-const MODEL =
-  process.env.GEMINI_MODEL || 'gemini-2.0-flash';
+const MODEL = process.env.GEMINI_MODEL || 'gemini-2.0-flash';
 
 const RESPONSE_SCHEMA = {
   type: 'object',
@@ -11,22 +21,26 @@ const RESPONSE_SCHEMA = {
     totalAdditionalSavings: {
       type: 'string',
       description:
-        'A formatted GBP amount such as "£6,034" representing the additional tax-deductible amount the user could plausibly claim.',
+        'Formatted GBP amount such as "£6,034" representing the additional tax-deductible amount the user could plausibly claim, scaled to their stated annual income.',
     },
     profile: {
       type: 'object',
       properties: {
-        name: { type: 'string' },
+        name: {
+          type: 'string',
+          description:
+            'The user-provided first name (use it verbatim). Fall back to "You" only if it is empty.',
+        },
         role: {
           type: 'string',
           description:
-            'A short uppercase role label, e.g. "SELF-EMPLOYED" or "LANDLORD" or "SELF-EMPLOYED LANDLORD".',
+            'Short uppercase role label, e.g. "SELF-EMPLOYED", "LANDLORD", or "SELF-EMPLOYED LANDLORD".',
         },
         chips: {
           type: 'array',
           items: { type: 'string' },
           description:
-            'Up to 5 short tag strings summarising the user (annual income, sector, life events).',
+            '2-5 short tags summarising the user. Always include the annual income (e.g. "£45,000"), the business nature if provided, and any personal details that affect tax (Married, Dependants, Student loan, Homeowner, Renter).',
         },
       },
       required: ['name', 'role', 'chips'],
@@ -34,36 +48,46 @@ const RESPONSE_SCHEMA = {
     alreadyExpensing: {
       type: 'array',
       description:
-        'The expense categories the user has already selected, with a plausible amount and brief advice.',
+        'One entry per category the user ticked on the expenses screen. Use the exact emoji and title supplied for that category. Do NOT include any amount or numbers - only emoji, title and a short, specific piece of advice tailored to the user.',
       items: {
         type: 'object',
         properties: {
           emoji: { type: 'string' },
           title: { type: 'string' },
-          amount: { type: 'string' },
-          advice: { type: 'string' },
+          advice: {
+            type: 'string',
+            description:
+              'One or two sentences of concrete UK self-assessment advice for this category given the user\'s situation (income level, business nature, life events). Never write "Lorem ipsum" or filler text.',
+          },
         },
-        required: ['emoji', 'title', 'amount', 'advice'],
+        required: ['emoji', 'title', 'advice'],
       },
     },
     improvements: {
       type: 'array',
       description:
-        'Categories or specific deductibles the user has NOT selected yet but likely could claim.',
+        '2-4 categories or specific deductibles the user did NOT tick but plausibly could claim given their answers. Each must have a real, specific advice paragraph and 3-5 example deductibles with realistic GBP amounts.',
       items: {
         type: 'object',
         properties: {
           emoji: { type: 'string' },
           title: { type: 'string' },
           description: { type: 'string' },
-          advice: { type: 'string' },
+          advice: {
+            type: 'string',
+            description:
+              'One or two sentences of concrete UK self-assessment advice. Never "Lorem ipsum" or filler.',
+          },
           deductibles: {
             type: 'array',
             items: {
               type: 'object',
               properties: {
                 label: { type: 'string' },
-                amount: { type: 'string' },
+                amount: {
+                  type: 'string',
+                  description: 'Formatted GBP amount, e.g. "~£45".',
+                },
               },
               required: ['label', 'amount'],
             },
@@ -73,46 +97,114 @@ const RESPONSE_SCHEMA = {
       },
     },
   },
-  required: ['totalAdditionalSavings', 'profile', 'alreadyExpensing', 'improvements'],
+  required: [
+    'totalAdditionalSavings',
+    'profile',
+    'alreadyExpensing',
+    'improvements',
+  ],
 };
 
-function buildPrompt(input: AnalysisInput): string {
-  return `You are a UK self-assessment tax expert assisting Taxfix.
+function resolveContext(input: AnalysisInput) {
+  const incomeLabels = input.incomes.map(
+    (id) => INCOME_SOURCE_LABELS[id] ?? id,
+  );
 
-Given the user's questionnaire answers below, produce a personalised expense
-analysis for the 2024/25 UK tax year. All numbers must be illustrative and
-realistic for someone with the stated income and circumstances. Use British
-pounds (£) with thousands separators.
+  const isSelfEmployed = input.incomes.includes('self-employment');
+  const isLandlord = input.incomes.includes('rental');
 
-Return JSON only, matching the supplied schema. Do not invent income types
-the user did not select. Always include 2-4 entries in alreadyExpensing
-(based on the categories they ticked) and 2-4 entries in improvements
-(categories or specific deductibles they did NOT tick but plausibly could
-claim). For improvements, include 3-5 deductibles each with realistic line
-items and amounts.
+  const expensesAlreadyTicked = [
+    ...(isSelfEmployed
+      ? input.selfEmployedExpenses.map(resolveSelfEmployedCategory)
+      : []),
+    ...(isLandlord
+      ? input.landlordExpenses.map(resolveLandlordCategory)
+      : []),
+  ].filter((c): c is NonNullable<typeof c> => Boolean(c));
 
-User's answers:
-${JSON.stringify(input, null, 2)}
-`;
+  const expensesNotTicked = (
+    isSelfEmployed
+      ? SELF_EMPLOYED_CATEGORIES.filter(
+          (c) => !input.selfEmployedExpenses.includes(c.id),
+        )
+      : []
+  ).concat(
+    isLandlord
+      ? LANDLORD_CATEGORIES.filter(
+          (c) => !input.landlordExpenses.includes(c.id),
+        )
+      : [],
+  );
+
+  const personalDetailLabels = input.personalDetails
+    .map((id) => PERSONAL_DETAIL_LABELS[id] ?? id)
+    .join(', ');
+
+  return {
+    isSelfEmployed,
+    isLandlord,
+    incomeLabels,
+    expensesAlreadyTicked,
+    expensesNotTicked,
+    personalDetailLabels,
+  };
 }
 
-const FALLBACK = (input: AnalysisInput): AnalysisResponse => ({
-  totalAdditionalSavings: '£1,200',
-  profile: {
-    name: input.firstName || 'You',
-    role: input.incomes.includes('self-employment')
-      ? 'SELF-EMPLOYED'
-      : input.incomes.includes('rental')
-        ? 'LANDLORD'
-        : 'TAXPAYER',
-    chips: [
-      input.businessNature?.slice(0, 24) || 'Self-employed',
-      input.annualIncome ? `£${input.annualIncome}` : '£45,000',
-    ].filter(Boolean),
-  },
-  alreadyExpensing: [],
-  improvements: [],
-});
+function buildPrompt(input: AnalysisInput): string {
+  const ctx = resolveContext(input);
+
+  return `You are a UK self-assessment tax expert assisting Taxfix.
+
+The user has just completed a short questionnaire. Produce a personalised
+expense analysis for the 2024/25 UK tax year that reflects ONLY the answers
+below.
+
+Critical rules:
+- profile.name MUST be exactly "${input.firstName || 'You'}".
+- profile.role MUST reflect the income types they selected: ${ctx.incomeLabels.join(', ') || 'none'}.
+- profile.chips should include the income (£${input.annualIncome || 'unspecified'}) and any of these life events that apply: ${ctx.personalDetailLabels || 'none'}. If they entered a business nature ("${input.businessNature || ''}"), include a 1-2 word industry chip from it.
+- alreadyExpensing MUST contain exactly one entry per category the user ticked. There are ${ctx.expensesAlreadyTicked.length} such categories: ${ctx.expensesAlreadyTicked.map((c) => `${c.emoji} ${c.title}`).join(', ') || 'none'}. Use the supplied emoji and title verbatim. Do NOT invent extra entries. Do NOT include any amount or numbers in this section.
+- improvements should suggest 2-4 categories the user did NOT tick but plausibly could claim, drawn from this list: ${ctx.expensesNotTicked.map((c) => `${c.emoji} ${c.title}`).join(', ') || '(no untouched categories)'}. Use the supplied emoji and title verbatim.
+- Every "advice" string must be specific, helpful, and grounded in the user's circumstances. NEVER write "Lorem ipsum", placeholders, or generic filler.
+- All monetary amounts must be plausible relative to their stated annual income of £${input.annualIncome || 'unknown'}.
+
+Raw answers JSON:
+${JSON.stringify(input, null, 2)}
+
+Return JSON only, exactly matching the supplied schema.`;
+}
+
+const FALLBACK = (input: AnalysisInput): AnalysisResponse => {
+  const ctx = resolveContext(input);
+  return {
+    totalAdditionalSavings: '—',
+    profile: {
+      name: input.firstName || 'You',
+      role:
+        ctx.isSelfEmployed && ctx.isLandlord
+          ? 'SELF-EMPLOYED LANDLORD'
+          : ctx.isSelfEmployed
+            ? 'SELF-EMPLOYED'
+            : ctx.isLandlord
+              ? 'LANDLORD'
+              : 'TAXPAYER',
+      chips: [
+        input.annualIncome ? `£${input.annualIncome}` : '',
+        input.businessNature?.slice(0, 24) ?? '',
+        ...input.personalDetails.map(
+          (id) => PERSONAL_DETAIL_LABELS[id] ?? id,
+        ),
+      ].filter(Boolean),
+    },
+    alreadyExpensing: ctx.expensesAlreadyTicked.map((c) => ({
+      emoji: c.emoji,
+      title: c.title,
+      advice:
+        'We could not reach the AI advisor — try refreshing for personalised guidance.',
+    })),
+    improvements: [],
+  };
+};
 
 export default async function handler(req: Request): Promise<Response> {
   if (req.method !== 'POST') {

@@ -1,88 +1,32 @@
 import { AppBar } from '../components/AppBar';
 import { Progress } from '../components/Progress';
 import { OptionCard } from '../components/OptionCard';
+import { SELF_EMPLOYED_CATEGORIES } from '../shared/categories';
 import type { ScreenProps } from './types';
 
-const CATEGORIES: {
-  id: string;
-  emoji: string;
-  title: string;
-  description: React.ReactNode;
-}[] = [
-  {
-    id: 'home',
-    emoji: '🏠',
-    title: 'Working from home',
-    description:
-      'You can claim a portion of your household bills if you work from home.',
-  },
-  {
-    id: 'office',
-    emoji: '📱',
-    title: 'Office & Phone',
-    description: 'The everyday costs of running your admin.',
-  },
-  {
-    id: 'tech',
-    emoji: '💻',
-    title: 'Tech & Equipment',
-    description: 'Bigger items you need to do your work.',
-  },
-  {
-    id: 'travel',
-    emoji: '🚗',
-    title: 'Travel',
-    description: 'Costs for journeys you make for business.',
-  },
-  {
-    id: 'materials',
-    emoji: '🛠️',
-    title: 'Materials & Stock',
-    description: 'The direct costs of what you sell or make.',
-  },
-  {
-    id: 'clothing',
-    emoji: '👔',
-    title: 'Clothing',
-    description: 'Specialist clothing needed for your job',
-  },
-  {
-    id: 'professional',
-    emoji: '🧾',
-    title: 'Professional Services',
-    description: (
-      <>
-        Fees you pay to other professionals for your business.
-        <br />
-        <strong>Accountant fees are also deductible.</strong>
-      </>
-    ),
-  },
-  {
-    id: 'insurance',
-    emoji: '🛡️',
-    title: 'Insurance',
-    description: 'Policies that protect your business.',
-  },
-  {
-    id: 'training',
-    emoji: '📚',
-    title: 'Training',
-    description: 'Courses that help you do your current job better.',
-  },
-  {
-    id: 'staff',
-    emoji: '👥',
-    title: 'Staff (if you have any)',
-    description: 'Costs related to hiring people.',
-  },
-  {
-    id: 'subscriptions',
-    emoji: '🎟️',
-    title: 'Subscriptions',
-    description: 'Membership fees for professional organisations.',
-  },
-];
+const DESCRIPTIONS: Record<string, React.ReactNode> = {
+  home: 'You can claim a portion of your household bills if you work from home.',
+  office: 'The everyday costs of running your admin.',
+  tech: 'Bigger items you need to do your work.',
+  travel: 'Costs for journeys you make for business.',
+  materials: 'The direct costs of what you sell or make.',
+  clothing: 'Specialist clothing needed for your job',
+  professional: (
+    <>
+      Fees you pay to other professionals for your business.
+      <br />
+      <strong>Accountant fees are also deductible.</strong>
+    </>
+  ),
+  insurance: 'Policies that protect your business.',
+  training: 'Courses that help you do your current job better.',
+  staff: 'Costs related to hiring people.',
+  subscriptions: 'Membership fees for professional organisations.',
+};
+
+const TITLE_OVERRIDES: Record<string, string> = {
+  staff: 'Staff (if you have any)',
+};
 
 export function SelfEmployedExpenses({
   state,
@@ -114,13 +58,13 @@ export function SelfEmployedExpenses({
             </p>
           </header>
           <div className="options">
-            {CATEGORIES.map((cat) => (
+            {SELF_EMPLOYED_CATEGORIES.map((cat) => (
               <OptionCard
                 key={cat.id}
                 id={cat.id}
                 emoji={cat.emoji}
-                title={cat.title}
-                description={cat.description}
+                title={TITLE_OVERRIDES[cat.id] ?? cat.title}
+                description={DESCRIPTIONS[cat.id]}
                 checked={state.selfEmployedExpenses.includes(cat.id)}
                 onToggle={toggle}
               />

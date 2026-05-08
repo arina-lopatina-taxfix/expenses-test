@@ -25,7 +25,6 @@ export type DeductibleLine = {
 export type AlreadyExpensingItem = {
   emoji: string;
   title: string;
-  amount: string;
   advice: string;
 };
 

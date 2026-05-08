@@ -167,12 +167,6 @@ export function Results({ state, goBack }: ScreenProps) {
                         <span aria-hidden="true">{item.emoji}</span>{' '}
                         {item.title}
                       </p>
-                      <span
-                        className="chip chip--ghost"
-                        style={{ alignSelf: 'flex-start' }}
-                      >
-                        {item.amount}
-                      </span>
                     </div>
                     <div className="results__alert" style={{ flex: 1 }}>
                       <span className="results__alert-title">
