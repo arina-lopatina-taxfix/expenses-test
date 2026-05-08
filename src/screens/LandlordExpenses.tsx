@@ -1,63 +1,22 @@
 import { AppBar } from '../components/AppBar';
 import { Progress } from '../components/Progress';
 import { OptionCard } from '../components/OptionCard';
+import { LANDLORD_CATEGORIES } from '../shared/categories';
 import type { ScreenProps } from './types';
 
-const CATEGORIES = [
-  {
-    id: 'mortgage',
-    emoji: '🏠',
-    title: 'Mortgage Interest',
-    description: 'The interest you pay on buy-to-let mortgages',
-  },
-  {
-    id: 'repairs',
-    emoji: '🛠',
-    title: 'Repairs & Maintenance',
-    description:
-      'Costs of fixing and maintaining the property (but not improvements)',
-  },
-  {
-    id: 'insurance',
-    emoji: '🧾',
-    title: 'Insurance',
-    description: 'Landlord, building, and contents insurance policies',
-  },
-  {
-    id: 'services',
-    emoji: '🧹',
-    title: 'Services & Utilities',
-    description:
-      'Bills you cover for tenants, such as water, gas, electricity, and council tax',
-  },
-  {
-    id: 'professional',
-    emoji: '💼',
-    title: 'Professional Fees',
-    description: 'Payments to letting agents, accountants, or solicitors',
-  },
-  {
-    id: 'travel',
-    emoji: '🚗',
-    title: 'Travel',
-    description:
-      'Mileage or transport costs when travelling for property management',
-  },
-  {
-    id: 'office',
-    emoji: '🗃',
-    title: 'Office & Admin',
-    description:
-      'Stationery, phone, and office-related costs for managing your properties.',
-  },
-  {
-    id: 'replacement',
-    emoji: '🛋',
-    title: 'Replacement of domestic items',
-    description:
-      'Furniture, appliances, or household items replaced for tenants.',
-  },
-];
+const DESCRIPTIONS: Record<string, string> = {
+  mortgage: 'The interest you pay on buy-to-let mortgages',
+  repairs: 'Costs of fixing and maintaining the property (but not improvements)',
+  insurance: 'Landlord, building, and contents insurance policies',
+  services:
+    'Bills you cover for tenants, such as water, gas, electricity, and council tax',
+  professional: 'Payments to letting agents, accountants, or solicitors',
+  travel: 'Mileage or transport costs when travelling for property management',
+  office:
+    'Stationery, phone, and office-related costs for managing your properties.',
+  replacement:
+    'Furniture, appliances, or household items replaced for tenants.',
+};
 
 export function LandlordExpenses({
   state,
@@ -89,13 +48,13 @@ export function LandlordExpenses({
             </p>
           </header>
           <div className="options">
-            {CATEGORIES.map((cat) => (
+            {LANDLORD_CATEGORIES.map((cat) => (
               <OptionCard
                 key={cat.id}
                 id={cat.id}
                 emoji={cat.emoji}
                 title={cat.title}
-                description={cat.description}
+                description={DESCRIPTIONS[cat.id]}
                 checked={state.landlordExpenses.includes(cat.id)}
                 onToggle={toggle}
               />
