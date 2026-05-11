@@ -1,4 +1,3 @@
-import { AppBar } from '../components/AppBar';
 import { Progress } from '../components/Progress';
 import { OptionCard } from '../components/OptionCard';
 import { SELF_EMPLOYED_CATEGORIES } from '../shared/categories';
@@ -45,7 +44,6 @@ export function SelfEmployedExpenses({
 
   return (
     <div className="app-shell">
-      <AppBar />
       <Progress value={progress} />
       <main className="scroll-step">
         <div className="step__inner">

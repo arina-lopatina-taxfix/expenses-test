@@ -1,37 +1,52 @@
-import { AppBar } from '../components/AppBar';
 import { IdCardIcon } from '../components/IdCardIcon';
+import { INCOME_SOURCE_LABELS } from '../shared/categories';
 import type { ScreenProps } from './types';
 
-export function Mistake({ restart }: ScreenProps) {
+const ASSESSMENT_SIGNUP_URL = 'https://taxfix.com/en-uk/assessment/signup';
+
+export function Mistake({ state }: ScreenProps) {
+  const incomeLabels = state.incomes
+    .map((id) => INCOME_SOURCE_LABELS[id]?.replace(/^[^A-Za-z]+/, '').trim() ?? id)
+    .filter(Boolean);
+  const incomeDescriptor =
+    incomeLabels.length === 0
+      ? 'this type'
+      : incomeLabels.length === 1
+        ? incomeLabels[0].toLowerCase()
+        : `${incomeLabels.slice(0, -1).join(', ').toLowerCase()} and ${incomeLabels.slice(-1)[0].toLowerCase()}`;
+
   return (
     <div className="app-shell">
-      <AppBar showLogin={false} />
       <main className="step">
         <div className="mistake">
           <div className="mistake__icon" aria-hidden="true">
             <IdCardIcon />
           </div>
-          <h1 className="mistake__title">
-            You can’t claim expenses for this income type
-          </h1>
-          <p className="mistake__desc">
-            Because your income is from [type of income], expenses can’t be
-            claimed against it in your tax return. If you need additional
-            support, our accredited accountants can help you make the most of
-            your return.
-          </p>
-          <div className="mistake__actions">
-            <button className="btn btn--primary btn--lg" type="button">
-              Get help with Self Assessment
-            </button>
-            <button
-              className="btn btn--tertiary btn--lg"
-              type="button"
-              onClick={restart}
-            >
-              <span className="btn-arrow">←</span> Start again
-            </button>
+          <div className="mistake__heading">
+            <h1 className="mistake__title">
+              Don’t miss out on tax reliefs you could claim
+            </h1>
+            <div className="mistake__desc">
+              <p>
+                If your income is from {incomeDescriptor}, expenses can’t be
+                deducted from it in your tax return. But that doesn’t mean you
+                can’t save money.
+              </p>
+              <p>
+                But you still will be able to claim tax reliefs such as pension
+                tax relief or the Marriage Allowance. File your next tax return
+                with us and make sure you claim everything you’re entitled to.
+              </p>
+            </div>
           </div>
+          <a
+            className="btn btn--primary btn--lg btn--inline"
+            href={ASSESSMENT_SIGNUP_URL}
+            target="_blank"
+            rel="noreferrer noopener"
+          >
+            Get help with my tax return
+          </a>
         </div>
       </main>
     </div>

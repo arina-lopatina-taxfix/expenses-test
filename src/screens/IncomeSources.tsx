@@ -1,7 +1,5 @@
-import { AppBar } from '../components/AppBar';
 import { Progress } from '../components/Progress';
 import { Footer } from '../components/Footer';
-import { Flourishes } from '../components/Flourish';
 import { OptionCard } from '../components/OptionCard';
 import type { IncomeSource } from '../flow';
 import type { ScreenProps } from './types';
@@ -32,9 +30,7 @@ export function IncomeSources({
 
   return (
     <div className="app-shell">
-      <AppBar />
       <Progress value={progress} />
-      <Flourishes />
       <main className="step">
         <div className="step__inner">
           <header className="step__heading">
