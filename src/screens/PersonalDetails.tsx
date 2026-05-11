@@ -1,4 +1,3 @@
-import { AppBar } from '../components/AppBar';
 import { Progress } from '../components/Progress';
 import { OptionCard } from '../components/OptionCard';
 import type { ScreenProps } from './types';
@@ -28,7 +27,6 @@ export function PersonalDetails({
 
   return (
     <div className="app-shell">
-      <AppBar />
       <Progress value={progress} />
       <main className="step">
         <div className="step__inner">

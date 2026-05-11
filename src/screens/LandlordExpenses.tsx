@@ -1,4 +1,3 @@
-import { AppBar } from '../components/AppBar';
 import { Progress } from '../components/Progress';
 import { OptionCard } from '../components/OptionCard';
 import { LANDLORD_CATEGORIES } from '../shared/categories';
@@ -35,7 +34,6 @@ export function LandlordExpenses({
 
   return (
     <div className="app-shell">
-      <AppBar />
       <Progress value={progress} />
       <main className="scroll-step">
         <div className="step__inner">

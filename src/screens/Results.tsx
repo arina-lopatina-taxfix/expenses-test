@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { AppBar } from '../components/AppBar';
 import { Footer } from '../components/Footer';
+import { PrefillIcon } from '../components/PrefillIcon';
 import type {
   AnalysisInput,
   AnalysisResponse,
@@ -66,17 +66,16 @@ export function Results({ state, goBack }: ScreenProps) {
 
   if (fetchState.status === 'loading') {
     return (
-      <div className="app-shell app-shell--soft results">
-        <AppBar variant="minimal" />
-        <main className="results__loading">
-          <div className="results__spinner" aria-hidden="true" />
-          <p className="results__loading-text">
-            Analysing your answers with Gemini…
-          </p>
-          <p className="results__loading-sub">
-            We’re comparing your answers against the deductibles available for
-            your situation. This usually takes a few seconds.
-          </p>
+      <div className="app-shell results">
+        <main className="prefill">
+          <div className="prefill__icon">
+            <PrefillIcon />
+          </div>
+          <div className="prefill__lines">
+            <p className="prefill__muted">Reading your return…</p>
+            <p className="prefill__active">Identifying missed expenses…</p>
+            <p className="prefill__muted">Calculating potential refund…</p>
+          </div>
         </main>
       </div>
     );
@@ -90,7 +89,6 @@ export function Results({ state, goBack }: ScreenProps) {
   if (!data) {
     return (
       <div className="app-shell app-shell--soft results">
-        <AppBar variant="minimal" />
         <main className="results__loading">
           <p className="results__loading-text">Couldn’t load your analysis.</p>
           <p className="results__loading-sub">
@@ -110,7 +108,6 @@ export function Results({ state, goBack }: ScreenProps) {
 
   return (
     <div className="app-shell app-shell--soft results">
-      <AppBar variant="minimal" />
       <header className="results__hero">
         <p className="results__eyebrow">TAX RETURN 2024/25</p>
         <h1 className="results__title">

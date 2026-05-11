@@ -1,4 +1,3 @@
-import { AppBar } from '../components/AppBar';
 import { IdCardIcon } from '../components/IdCardIcon';
 import { INCOME_SOURCE_LABELS } from '../shared/categories';
 import type { ScreenProps } from './types';
@@ -18,7 +17,6 @@ export function Mistake({ state }: ScreenProps) {
 
   return (
     <div className="app-shell">
-      <AppBar showLogin={false} />
       <main className="step">
         <div className="mistake">
           <div className="mistake__icon" aria-hidden="true">

@@ -1,4 +1,3 @@
-import { AppBar } from '../components/AppBar';
 import { Progress } from '../components/Progress';
 import { Footer } from '../components/Footer';
 import { OptionCard } from '../components/OptionCard';
@@ -31,7 +30,6 @@ export function IncomeSources({
 
   return (
     <div className="app-shell">
-      <AppBar />
       <Progress value={progress} />
       <main className="step">
         <div className="step__inner">
