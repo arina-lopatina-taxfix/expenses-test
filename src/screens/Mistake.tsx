@@ -1,4 +1,5 @@
 import { IdCardIcon } from '../components/IdCardIcon';
+import { Button } from '../ds';
 import { INCOME_SOURCE_LABELS } from '../shared/categories';
 import type { ScreenProps } from './types';
 
@@ -6,7 +7,10 @@ const ASSESSMENT_SIGNUP_URL = 'https://taxfix.com/en-uk/assessment/signup';
 
 export function Mistake({ state }: ScreenProps) {
   const incomeLabels = state.incomes
-    .map((id) => INCOME_SOURCE_LABELS[id]?.replace(/^[^A-Za-z]+/, '').trim() ?? id)
+    .map(
+      (id) =>
+        INCOME_SOURCE_LABELS[id]?.replace(/^[^A-Za-z]+/, '').trim() ?? id,
+    )
     .filter(Boolean);
   const incomeDescriptor =
     incomeLabels.length === 0
@@ -23,10 +27,8 @@ export function Mistake({ state }: ScreenProps) {
             <IdCardIcon />
           </div>
           <div className="mistake__heading">
-            <h1 className="mistake__title">
-              Don’t miss out on tax reliefs you could claim
-            </h1>
-            <div className="mistake__desc">
+            <h1 className="ds-h1">Don’t miss out on tax reliefs you could claim</h1>
+            <div className="mistake__desc ds-subtitle">
               <p>
                 If your income is from {incomeDescriptor}, expenses can’t be
                 deducted from it in your tax return. But that doesn’t mean you
@@ -39,14 +41,15 @@ export function Mistake({ state }: ScreenProps) {
               </p>
             </div>
           </div>
-          <a
-            className="btn btn--primary btn--lg btn--inline"
+          <Button
+            as="a"
             href={ASSESSMENT_SIGNUP_URL}
             target="_blank"
             rel="noreferrer noopener"
+            className="ds-button--inline"
           >
             Get help with my tax return
-          </a>
+          </Button>
         </div>
       </main>
     </div>

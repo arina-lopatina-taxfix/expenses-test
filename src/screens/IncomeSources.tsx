@@ -34,8 +34,8 @@ export function IncomeSources({
       <main className="step">
         <div className="step__inner">
           <header className="step__heading">
-            <h1 className="step__title">Where do you get your income from?</h1>
-            <p className="step__subtitle">Choose all that apply</p>
+            <h1 className="ds-h1">Where do you get your income from?</h1>
+            <p className="ds-subtitle">Choose all that apply</p>
           </header>
           <div className="options">
             {OPTIONS.map((opt) => (

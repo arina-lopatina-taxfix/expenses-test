@@ -1,5 +1,6 @@
 import { Progress } from '../components/Progress';
 import { OptionCard } from '../components/OptionCard';
+import { Button } from '../ds';
 import { SELF_EMPLOYED_CATEGORIES } from '../shared/categories';
 import type { ScreenProps } from './types';
 
@@ -48,10 +49,8 @@ export function SelfEmployedExpenses({
       <main className="scroll-step">
         <div className="step__inner">
           <header className="step__heading">
-            <h1 className="step__title">
-              Did you spend any money on these categories?
-            </h1>
-            <p className="step__subtitle">
+            <h1 className="ds-h1">Did you spend any money on these categories?</h1>
+            <p className="ds-subtitle">
               We will most likely be able to deduct them from your tax return
             </p>
           </header>
@@ -68,13 +67,9 @@ export function SelfEmployedExpenses({
               />
             ))}
           </div>
-          <button
-            className="btn btn--primary btn--lg btn--inline"
-            type="button"
-            onClick={goNext}
-          >
+          <Button onClick={goNext} className="ds-button--inline">
             Continue
-          </button>
+          </Button>
         </div>
       </main>
     </div>

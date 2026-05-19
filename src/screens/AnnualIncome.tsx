@@ -1,5 +1,6 @@
 import { Progress } from '../components/Progress';
 import { Footer } from '../components/Footer';
+import { TextField } from '../ds';
 import type { ScreenProps } from './types';
 
 export function AnnualIncome({
@@ -15,26 +16,24 @@ export function AnnualIncome({
       <main className="step">
         <div className="step__inner step__inner--tight">
           <header className="step__heading">
-            <h1 className="step__title">What is your annual income?</h1>
-            <p className="step__subtitle">
+            <h1 className="ds-h1">What is your annual income?</h1>
+            <p className="ds-subtitle">
               Enter your total income for 6 Apr 2024 - 5 Apr 2025 before tax
             </p>
           </header>
-          <div className="field" style={{ width: 360 }}>
-            <span className="field__label">Annual income</span>
-            <div className="field__input-wrap">
-              <input
-                className="field__input"
-                inputMode="numeric"
-                placeholder="120,000"
-                value={state.annualIncome}
-                onChange={(e) =>
-                  update({ annualIncome: e.target.value.replace(/[^0-9,]/g, '') })
-                }
-              />
-              <span className="field__suffix">£</span>
-            </div>
-          </div>
+          <TextField
+            labelText="Annual income"
+            unit="£"
+            inputMode="numeric"
+            placeholder="120,000"
+            value={state.annualIncome}
+            onChange={(e) =>
+              update({
+                annualIncome: e.target.value.replace(/[^0-9,]/g, ''),
+              })
+            }
+            containerStyle={{ width: 360 }}
+          />
         </div>
       </main>
       <Footer
