@@ -1,42 +1,37 @@
-import type { ReactNode } from 'react';
+import { Button } from '../ds';
 
 type FooterProps = {
   onBack?: () => void;
   primaryLabel: string;
   onPrimary?: () => void;
   primaryDisabled?: boolean;
-  primaryStartIcon?: ReactNode;
 };
+
+const ArrowLeft = () => <span aria-hidden="true">←</span>;
 
 export function Footer({
   onBack,
   primaryLabel,
   onPrimary,
   primaryDisabled,
-  primaryStartIcon,
 }: FooterProps) {
   return (
     <div className="footer">
       {onBack ? (
-        <button
-          className="btn btn--tertiary btn--lg"
-          type="button"
-          onClick={onBack}
-        >
-          <span className="btn-arrow">←</span> Back
-        </button>
+        <Button variant="tertiary" size="large" onClick={onBack} startIcon={<ArrowLeft />}>
+          Back
+        </Button>
       ) : (
         <span />
       )}
-      <button
-        className="btn btn--primary btn--lg"
-        type="button"
+      <Button
+        variant="primary"
+        size="large"
         onClick={onPrimary}
         disabled={primaryDisabled}
       >
-        {primaryStartIcon}
         {primaryLabel}
-      </button>
+      </Button>
     </div>
   );
 }

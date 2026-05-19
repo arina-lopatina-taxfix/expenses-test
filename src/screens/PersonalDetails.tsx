@@ -1,5 +1,6 @@
 import { Progress } from '../components/Progress';
 import { OptionCard } from '../components/OptionCard';
+import { Button } from '../ds';
 import type { ScreenProps } from './types';
 
 const OPTIONS = [
@@ -31,10 +32,10 @@ export function PersonalDetails({
       <main className="step">
         <div className="step__inner">
           <header className="step__heading">
-            <h1 className="step__title">
+            <h1 className="ds-h1">
               Enter your total income for the year before tax
             </h1>
-            <p className="step__subtitle">
+            <p className="ds-subtitle">
               Select all that apply so we can check for any credits and
               deductions available to you
             </p>
@@ -51,13 +52,9 @@ export function PersonalDetails({
               />
             ))}
           </div>
-          <button
-            className="btn btn--primary btn--lg btn--inline"
-            type="button"
-            onClick={goNext}
-          >
+          <Button onClick={goNext} className="ds-button--inline">
             Continue
-          </button>
+          </Button>
         </div>
       </main>
     </div>

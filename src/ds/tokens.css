@@ -1,0 +1,378 @@
+/* Design system tokens from Figma Global Styles library */
+:root {
+  /* Primary */
+  --ds-primary-light: #36893b;
+  --ds-primary-main: #154618;
+  --ds-primary-contrast: #154618;
+  --ds-primary-action: #a0d766;
+  --ds-primary-secondary-action: rgba(169, 212, 129, 0.4);
+  --ds-primary-soft: #cef5a4;
+
+  /* Neutrals */
+  --ds-neutral-main: rgba(12, 11, 10, 0.8);
+  --ds-neutral-background: #f2efed;
+  --ds-neutral-background-light: #f9f7f5;
+
+  /* Grey */
+  --ds-grey-surface-3: #ffffff;
+  --ds-grey-background: #ffffff;
+  --ds-grey-graphics-2: #96928e;
+  --ds-grey-graphics-10: rgba(12, 11, 10, 0.1);
+
+  /* Text */
+  --ds-text-title: #0c0b0a;
+  --ds-text-primary: rgba(12, 11, 10, 0.8);
+  --ds-text-secondary: rgba(12, 11, 10, 0.65);
+  --ds-text-muted: rgba(12, 11, 10, 0.6);
+
+  /* Radii */
+  --ds-radius-small: 4px;
+  --ds-radius-button-medium: 8px;
+  --ds-radius-button-large: 10px;
+  --ds-radius-large: 16px;
+  --ds-radius-full: 9999px;
+
+  /* Spacing scale */
+  --ds-space-0_5: 2px;
+  --ds-space-1: 8px;
+  --ds-space-1_5: 12px;
+  --ds-space-2: 16px;
+  --ds-space-3: 24px;
+  --ds-space-4: 32px;
+  --ds-space-5: 36px;
+
+  /* Elevation */
+  --ds-elevation-1: 0 0 1px rgba(0, 0, 0, 0.08), 2px 4px 8px rgba(0, 0, 0, 0.08);
+  --ds-elevation-2:
+    0 0 2px rgba(0, 0, 0, 0.08), 2px 4px 16px rgba(0, 0, 0, 0.08);
+
+  /* Typography */
+  --ds-font-headings: 'ABC ROM', 'Inter', system-ui, sans-serif;
+  --ds-font-body: 'ABC ROM', 'Inter', system-ui, sans-serif;
+  --ds-font-interactive: 'ABC ROM', 'Inter', system-ui, sans-serif;
+}
+
+/* ---------- Button ---------- */
+.ds-button {
+  font-family: var(--ds-font-interactive);
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  border-radius: var(--ds-radius-full);
+  transition:
+    filter 120ms ease,
+    background 120ms ease,
+    opacity 120ms ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ds-space-1);
+  white-space: nowrap;
+  text-decoration: none;
+  user-select: none;
+}
+
+.ds-button[disabled],
+.ds-button[aria-disabled='true'] {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.ds-button--lg {
+  height: 48px;
+  padding: 0 24px;
+  font-size: 16px;
+  line-height: 20px;
+}
+
+.ds-button--md {
+  height: 36px;
+  padding: 0 16px;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.ds-button--sm {
+  height: 32px;
+  padding: 0 14px;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.ds-button--primary {
+  background: var(--ds-primary-action);
+  color: var(--ds-primary-main);
+}
+.ds-button--primary:hover:not([disabled]) {
+  filter: brightness(0.96);
+}
+
+.ds-button--secondary {
+  background: transparent;
+  color: var(--ds-primary-main);
+  border: 1px solid var(--ds-primary-main);
+}
+.ds-button--secondary:hover:not([disabled]) {
+  background: rgba(21, 70, 24, 0.04);
+}
+
+.ds-button--tertiary {
+  background: transparent;
+  color: var(--ds-neutral-main);
+}
+.ds-button--tertiary:hover:not([disabled]) {
+  background: rgba(12, 11, 10, 0.04);
+}
+
+.ds-button__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  line-height: 1;
+}
+
+.ds-button--full {
+  width: 100%;
+}
+
+/* ---------- Card / Filled ---------- */
+.ds-card {
+  background: var(--ds-grey-surface-3);
+  border: 1px solid transparent;
+  border-radius: var(--ds-radius-large);
+  box-shadow: var(--ds-elevation-1);
+  transition:
+    border-color 120ms ease,
+    box-shadow 120ms ease;
+}
+
+.ds-card--interactive {
+  cursor: pointer;
+}
+
+.ds-card--interactive:hover {
+  border-color: rgba(54, 137, 59, 0.35);
+}
+
+.ds-card--selected {
+  border-color: var(--ds-primary-light);
+  box-shadow:
+    var(--ds-elevation-1),
+    inset 0 0 0 1px var(--ds-primary-light);
+}
+
+/* ---------- Linear progress ---------- */
+.ds-progress {
+  position: relative;
+  height: 4px;
+  width: 100%;
+  background: var(--ds-grey-graphics-10);
+  overflow: hidden;
+  border-radius: var(--ds-radius-small);
+}
+
+.ds-progress__bar {
+  height: 100%;
+  background: var(--ds-primary-light);
+  transition: width 240ms ease;
+}
+
+/* ---------- Checkbox ---------- */
+.ds-checkbox {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: var(--ds-radius-small);
+  border: 1.5px solid var(--ds-grey-graphics-2);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  background: #ffffff;
+  margin: 0;
+  transition:
+    border-color 120ms ease,
+    background 120ms ease;
+}
+
+.ds-checkbox:checked {
+  background: var(--ds-primary-light);
+  border-color: var(--ds-primary-light);
+}
+
+.ds-checkbox:checked::after {
+  content: '';
+  width: 5px;
+  height: 9px;
+  border: solid #ffffff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg) translate(-1px, -1px);
+}
+
+/* ---------- TextField (outlined) ---------- */
+.ds-field {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  width: 100%;
+}
+
+.ds-field__label {
+  position: absolute;
+  top: -8px;
+  left: 12px;
+  background: #ffffff;
+  padding: 0 4px;
+  font-size: 12px;
+  line-height: 1;
+  color: var(--ds-text-secondary);
+  z-index: 1;
+  font-family: var(--ds-font-body);
+}
+
+.ds-field__wrap {
+  position: relative;
+  width: 100%;
+}
+
+.ds-field__input,
+.ds-field__textarea {
+  font-family: var(--ds-font-body);
+  border: 1px solid var(--ds-grey-graphics-2);
+  border-radius: var(--ds-radius-small);
+  padding: 14px 16px;
+  font-size: 16px;
+  line-height: 20px;
+  color: var(--ds-text-title);
+  background: #ffffff;
+  width: 100%;
+  outline: none;
+  transition:
+    border-color 120ms ease,
+    box-shadow 120ms ease;
+  box-sizing: border-box;
+}
+
+.ds-field__input::placeholder,
+.ds-field__textarea::placeholder {
+  color: var(--ds-text-secondary);
+}
+
+.ds-field__input:focus,
+.ds-field__textarea:focus {
+  border-color: var(--ds-primary-light);
+  box-shadow: 0 0 0 1px var(--ds-primary-light);
+}
+
+.ds-field__suffix {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 16px;
+  color: var(--ds-text-secondary);
+  pointer-events: none;
+}
+
+.ds-field__textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.ds-field__helper {
+  display: flex;
+  justify-content: flex-end;
+  font-size: 12px;
+  color: var(--ds-text-secondary);
+  margin-top: 4px;
+}
+
+/* ---------- Chip ---------- */
+.ds-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  background: #ffffff;
+  border: 1px solid var(--ds-grey-graphics-10);
+  border-radius: var(--ds-radius-full);
+  font-family: var(--ds-font-body);
+  font-size: 14px;
+  line-height: 18px;
+  color: var(--ds-text-title);
+  white-space: nowrap;
+}
+
+.ds-chip--ghost {
+  background: var(--ds-neutral-background-light);
+}
+
+/* ---------- Headings ---------- */
+.ds-h1 {
+  font-family: var(--ds-font-headings);
+  font-weight: 700;
+  font-size: 30px;
+  line-height: 1.2;
+  letter-spacing: 0;
+  margin: 0;
+  color: var(--ds-text-title);
+}
+
+.ds-h4 {
+  font-family: var(--ds-font-headings);
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 28px;
+  letter-spacing: -0.2px;
+  margin: 0;
+  color: var(--ds-text-title);
+}
+
+.ds-h6 {
+  font-family: var(--ds-font-headings);
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: -0.14px;
+  margin: 0;
+  color: var(--ds-text-title);
+}
+
+.ds-body {
+  font-family: var(--ds-font-body);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 20px;
+  color: var(--ds-text-primary);
+  margin: 0;
+}
+
+.ds-body-strong {
+  font-family: var(--ds-font-body);
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 20px;
+  color: var(--ds-text-title);
+  margin: 0;
+}
+
+.ds-caption {
+  font-family: var(--ds-font-body);
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--ds-text-secondary);
+  margin: 0;
+}
+
+.ds-subtitle {
+  font-family: var(--ds-font-body);
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1.3;
+  color: var(--ds-text-muted);
+  margin: 0;
+}

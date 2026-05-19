@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { Card, Checkbox } from '../ds';
 
 type OptionCardProps = {
   id: string;
@@ -18,23 +19,20 @@ export function OptionCard({
   onToggle,
 }: OptionCardProps) {
   return (
-    <label
-      className={`option ${checked ? 'option--selected' : ''}`}
-      htmlFor={`opt-${id}`}
-    >
-      <input
-        id={`opt-${id}`}
-        className="checkbox"
-        type="checkbox"
-        checked={checked}
-        onChange={() => onToggle(id)}
-      />
-      <div className="option__body">
-        <p className="option__title">
-          <span aria-hidden="true">{emoji}</span> {title}
-        </p>
-        {description && <p className="option__desc">{description}</p>}
-      </div>
-    </label>
+    <Card interactive selected={checked} className="option-card">
+      <label className="option-card__inner" htmlFor={`opt-${id}`}>
+        <Checkbox
+          id={`opt-${id}`}
+          checked={checked}
+          onChange={() => onToggle(id)}
+        />
+        <div className="option-card__body">
+          <p className="option-card__title">
+            <span aria-hidden="true">{emoji}</span> {title}
+          </p>
+          {description && <p className="option-card__desc">{description}</p>}
+        </div>
+      </label>
+    </Card>
   );
 }

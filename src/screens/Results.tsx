@@ -1,10 +1,7 @@
 import { useEffect, useState } from 'react';
-import { Footer } from '../components/Footer';
 import { PrefillIcon } from '../components/PrefillIcon';
-import type {
-  AnalysisInput,
-  AnalysisResponse,
-} from '../shared/analysis';
+import { Button, Card, Chip } from '../ds';
+import type { AnalysisInput, AnalysisResponse } from '../shared/analysis';
 import type { ScreenProps } from './types';
 
 type FetchState =
@@ -47,10 +44,7 @@ export function Results({ state, goBack }: ScreenProps) {
       })
       .catch((err: unknown) => {
         if ((err as { name?: string })?.name === 'AbortError') return;
-        setFetchState({
-          status: 'error',
-          message: String(err),
-        });
+        setFetchState({ status: 'error', message: String(err) });
       });
     return () => ctrl.abort();
   }, [
@@ -94,13 +88,7 @@ export function Results({ state, goBack }: ScreenProps) {
           <p className="results__loading-sub">
             {fetchState.status === 'error' ? fetchState.message : ''}
           </p>
-          <button
-            className="btn btn--primary btn--lg"
-            type="button"
-            onClick={() => window.location.reload()}
-          >
-            Try again
-          </button>
+          <Button onClick={() => window.location.reload()}>Try again</Button>
         </main>
       </div>
     );
@@ -132,33 +120,29 @@ export function Results({ state, goBack }: ScreenProps) {
 
       <section className="results__body">
         <div className="results__inner">
-          <div className="results__profile">
+          <Card className="results__profile">
             <div className="results__profile-meta">
               <p className="results__profile-name">{data.profile.name}</p>
               <p className="results__profile-role">{data.profile.role}</p>
             </div>
             <div className="results__chips">
               {data.profile.chips.map((c, i) => (
-                <span className="chip" key={i}>
-                  {c}
-                </span>
+                <Chip key={i}>{c}</Chip>
               ))}
             </div>
-          </div>
+          </Card>
 
           {data.alreadyExpensing.length > 0 && (
             <div className="results__section">
               <div className="results__section-header">
-                <h2 className="results__section-title">
-                  What you are already expensing
-                </h2>
-                <span className="chip chip--ghost">
+                <h2 className="ds-h4">What you are already expensing</h2>
+                <Chip variant="ghost">
                   {data.alreadyExpensing.length} categories
-                </span>
+                </Chip>
               </div>
               <div className="results__items">
                 {data.alreadyExpensing.map((item, i) => (
-                  <article className="results__item" key={i}>
+                  <Card key={i} className="results__item">
                     <div className="results__item-main">
                       <p className="results__item-title">
                         <span aria-hidden="true">{item.emoji}</span>{' '}
@@ -171,7 +155,7 @@ export function Results({ state, goBack }: ScreenProps) {
                       </span>
                       <span className="results__alert-body">{item.advice}</span>
                     </div>
-                  </article>
+                  </Card>
                 ))}
               </div>
             </div>
@@ -180,18 +164,12 @@ export function Results({ state, goBack }: ScreenProps) {
           {data.improvements.length > 0 && (
             <div className="results__section">
               <div className="results__section-header">
-                <h2 className="results__section-title">What can be improved</h2>
-                <span className="chip chip--ghost">
-                  {data.improvements.length} categories
-                </span>
+                <h2 className="ds-h4">What can be improved</h2>
+                <Chip variant="ghost">{data.improvements.length} categories</Chip>
               </div>
               <div className="results__items">
                 {data.improvements.map((item, i) => (
-                  <article
-                    className="results__item"
-                    key={i}
-                    style={{ gap: 24 }}
-                  >
+                  <Card key={i} className="results__item" style={{ gap: 24 }}>
                     <div className="results__item-main">
                       <p className="results__item-title">
                         <span aria-hidden="true">{item.emoji}</span>{' '}
@@ -202,9 +180,7 @@ export function Results({ state, goBack }: ScreenProps) {
                         <span className="results__alert-title">
                           <span aria-hidden="true">⚡</span> Advice
                         </span>
-                        <span className="results__alert-body">
-                          {item.advice}
-                        </span>
+                        <span className="results__alert-body">{item.advice}</span>
                       </div>
                     </div>
                     <div className="results__divider" />
@@ -215,11 +191,11 @@ export function Results({ state, goBack }: ScreenProps) {
                       {item.deductibles.map((d, j) => (
                         <div className="results__deductible-row" key={j}>
                           <span>{d.label}</span>
-                          <span className="chip chip--ghost">{d.amount}</span>
+                          <Chip variant="ghost">{d.amount}</Chip>
                         </div>
                       ))}
                     </div>
-                  </article>
+                  </Card>
                 ))}
               </div>
             </div>
@@ -227,12 +203,28 @@ export function Results({ state, goBack }: ScreenProps) {
         </div>
       </section>
 
-      <Footer
-        onBack={goBack}
-        primaryLabel="Download summary"
-        primaryStartIcon={<span className="btn-arrow">⬇</span>}
-        onPrimary={() => window.print()}
-      />
+      <div className="footer">
+        {goBack ? (
+          <Button
+            variant="tertiary"
+            size="large"
+            onClick={goBack}
+            startIcon={<span aria-hidden="true">←</span>}
+          >
+            Back
+          </Button>
+        ) : (
+          <span />
+        )}
+        <Button
+          variant="primary"
+          size="large"
+          onClick={() => window.print()}
+          startIcon={<span aria-hidden="true">⬇</span>}
+        >
+          Download summary
+        </Button>
+      </div>
     </div>
   );
 }
