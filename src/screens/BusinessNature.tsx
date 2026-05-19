@@ -1,18 +1,9 @@
-import { Progress } from '../components/Progress';
-import { Footer } from '../components/Footer';
-import { MultilineTextField } from '../ds';
+import { Button, MultilineTextField } from '../ds';
 import type { ScreenProps } from './types';
 
-export function BusinessNature({
-  state,
-  update,
-  goNext,
-  goBack,
-  progress,
-}: ScreenProps) {
+export function BusinessNature({ state, update, goNext }: ScreenProps) {
   return (
     <div className="app-shell">
-      <Progress value={progress} />
       <main className="step">
         <div className="step__inner">
           <header className="step__heading">
@@ -28,14 +19,15 @@ export function BusinessNature({
             onChange={(e) => update({ businessNature: e.target.value })}
             containerStyle={{ width: 420 }}
           />
+          <Button
+            onClick={goNext}
+            disabled={!state.businessNature.trim()}
+            className="ds-button--inline"
+          >
+            Continue
+          </Button>
         </div>
       </main>
-      <Footer
-        onBack={goBack}
-        primaryLabel="Continue"
-        onPrimary={goNext}
-        primaryDisabled={!state.businessNature.trim()}
-      />
     </div>
   );
 }

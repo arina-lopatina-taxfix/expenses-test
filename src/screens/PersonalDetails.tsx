@@ -1,4 +1,3 @@
-import { Progress } from '../components/Progress';
 import { OptionCard } from '../components/OptionCard';
 import { Button } from '../ds';
 import type { ScreenProps } from './types';
@@ -15,7 +14,6 @@ export function PersonalDetails({
   state,
   update,
   goNext,
-  progress,
 }: ScreenProps) {
   const toggle = (id: string) => {
     const set = state.personalDetails;
@@ -28,7 +26,6 @@ export function PersonalDetails({
 
   return (
     <div className="app-shell">
-      <Progress value={progress} />
       <main className="step">
         <div className="step__inner">
           <header className="step__heading">

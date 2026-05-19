@@ -1,4 +1,3 @@
-import { Progress } from '../components/Progress';
 import { OptionCard } from '../components/OptionCard';
 import { Button } from '../ds';
 import { LANDLORD_CATEGORIES } from '../shared/categories';
@@ -22,7 +21,6 @@ export function LandlordExpenses({
   state,
   update,
   goNext,
-  progress,
 }: ScreenProps) {
   const toggle = (id: string) => {
     const set = state.landlordExpenses;
@@ -35,7 +33,6 @@ export function LandlordExpenses({
 
   return (
     <div className="app-shell">
-      <Progress value={progress} />
       <main className="scroll-step">
         <div className="step__inner">
           <header className="step__heading">
