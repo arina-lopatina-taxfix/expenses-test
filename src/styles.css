@@ -212,6 +212,17 @@ button {
   justify-content: center;
 }
 
+/* Override Brevo's hardcoded Helvetica inline styles so the embed
+   also uses ABC ROM. */
+.brevo-form-host,
+.brevo-form-host *,
+.brevo-form-host input,
+.brevo-form-host button,
+.brevo-form-host label,
+.brevo-form-host p {
+  font-family: var(--ds-font-body) !important;
+}
+
 /* ---------- Results screen ---------- */
 .results {
   background: #ffffff;

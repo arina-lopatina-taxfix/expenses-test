@@ -1,18 +1,9 @@
-import { Progress } from '../components/Progress';
-import { Footer } from '../components/Footer';
-import { TextField } from '../ds';
+import { Button, TextField } from '../ds';
 import type { ScreenProps } from './types';
 
-export function AnnualIncome({
-  state,
-  update,
-  goNext,
-  goBack,
-  progress,
-}: ScreenProps) {
+export function AnnualIncome({ state, update, goNext }: ScreenProps) {
   return (
     <div className="app-shell">
-      <Progress value={progress} />
       <main className="step">
         <div className="step__inner step__inner--tight">
           <header className="step__heading">
@@ -34,14 +25,15 @@ export function AnnualIncome({
             }
             containerStyle={{ width: 360 }}
           />
+          <Button
+            onClick={goNext}
+            disabled={!state.annualIncome.trim()}
+            className="ds-button--inline"
+          >
+            Continue
+          </Button>
         </div>
       </main>
-      <Footer
-        onBack={goBack}
-        primaryLabel="Continue"
-        onPrimary={goNext}
-        primaryDisabled={!state.annualIncome.trim()}
-      />
     </div>
   );
 }

@@ -1,4 +1,36 @@
 /* Design system tokens from Figma Global Styles library */
+
+/* ---------- ABC ROM webfont (3 weights used in Figma) ---------- */
+@font-face {
+  font-family: 'ABC ROM';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src:
+    url('/fonts/abc-rom/ABCROM-Regular.woff2') format('woff2'),
+    url('/fonts/abc-rom/ABCROM-Regular.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'ABC ROM';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src:
+    url('/fonts/abc-rom/ABCROM-Medium.woff2') format('woff2'),
+    url('/fonts/abc-rom/ABCROM-Medium.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'ABC ROM';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src:
+    url('/fonts/abc-rom/ABCROM-Bold.woff2') format('woff2'),
+    url('/fonts/abc-rom/ABCROM-Bold.woff') format('woff');
+}
+
 :root {
   /* Primary */
   --ds-primary-light: #36893b;
@@ -47,9 +79,9 @@
     0 0 2px rgba(0, 0, 0, 0.08), 2px 4px 16px rgba(0, 0, 0, 0.08);
 
   /* Typography */
-  --ds-font-headings: 'ABC ROM', 'Inter', system-ui, sans-serif;
-  --ds-font-body: 'ABC ROM', 'Inter', system-ui, sans-serif;
-  --ds-font-interactive: 'ABC ROM', 'Inter', system-ui, sans-serif;
+  --ds-font-headings: 'ABC ROM', sans-serif;
+  --ds-font-body: 'ABC ROM', sans-serif;
+  --ds-font-interactive: 'ABC ROM', sans-serif;
 }
 
 /* ---------- Button ---------- */

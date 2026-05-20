@@ -1,5 +1,4 @@
-import { Progress } from '../components/Progress';
-import { Footer } from '../components/Footer';
+import { Button } from '../ds';
 import { OptionCard } from '../components/OptionCard';
 import type { IncomeSource } from '../flow';
 import type { ScreenProps } from './types';
@@ -13,13 +12,7 @@ const OPTIONS: { id: IncomeSource; emoji: string; label: string }[] = [
   { id: 'foreign', emoji: '🌎', label: 'Foreign income' },
 ];
 
-export function IncomeSources({
-  state,
-  update,
-  goNext,
-  goBack,
-  progress,
-}: ScreenProps) {
+export function IncomeSources({ state, update, goNext }: ScreenProps) {
   const toggle = (id: string) => {
     const incomeId = id as IncomeSource;
     const incomes = state.incomes.includes(incomeId)
@@ -30,7 +23,6 @@ export function IncomeSources({
 
   return (
     <div className="app-shell">
-      <Progress value={progress} />
       <main className="step">
         <div className="step__inner">
           <header className="step__heading">
@@ -49,14 +41,15 @@ export function IncomeSources({
               />
             ))}
           </div>
+          <Button
+            onClick={goNext}
+            disabled={state.incomes.length === 0}
+            className="ds-button--inline"
+          >
+            Continue
+          </Button>
         </div>
       </main>
-      <Footer
-        onBack={goBack}
-        primaryLabel="Continue"
-        onPrimary={goNext}
-        primaryDisabled={state.incomes.length === 0}
-      />
     </div>
   );
 }

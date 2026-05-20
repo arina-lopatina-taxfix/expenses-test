@@ -1,4 +1,3 @@
-import { Progress } from '../components/Progress';
 import { OptionCard } from '../components/OptionCard';
 import { Button } from '../ds';
 import { SELF_EMPLOYED_CATEGORIES } from '../shared/categories';
@@ -32,7 +31,6 @@ export function SelfEmployedExpenses({
   state,
   update,
   goNext,
-  progress,
 }: ScreenProps) {
   const toggle = (id: string) => {
     const set = state.selfEmployedExpenses;
@@ -45,7 +43,6 @@ export function SelfEmployedExpenses({
 
   return (
     <div className="app-shell">
-      <Progress value={progress} />
       <main className="scroll-step">
         <div className="step__inner">
           <header className="step__heading">
