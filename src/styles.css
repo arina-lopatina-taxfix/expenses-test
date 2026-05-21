@@ -243,7 +243,8 @@ button {
   font-family: var(--ds-font-body) !important;
 }
 
-.brevo-form-host .input {
+.brevo-form-host .input,
+#sib-container input.input {
   border-radius: 15px !important;
 }
 
