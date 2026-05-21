@@ -1,0 +1,50 @@
+name: Auto-open PR for Claude branches
+
+on:
+  push:
+    branches:
+      - 'claude/**'
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  open-pr:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Open PR if one doesn't already exist
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: ${{ github.ref_name }}
+          BASE: master
+        run: |
+          set -euo pipefail
+
+          existing=$(gh pr list --head "$BRANCH" --base "$BASE" --state open --json number --jq '.[0].number' || true)
+          if [ -n "$existing" ]; then
+            echo "PR #$existing already open for $BRANCH — nothing to do."
+            exit 0
+          fi
+
+          # Skip if the branch has no commits ahead of master.
+          ahead=$(git rev-list --count "origin/$BASE..origin/$BRANCH")
+          if [ "$ahead" -eq 0 ]; then
+            echo "No commits ahead of $BASE; skipping PR creation."
+            exit 0
+          fi
+
+          # Title = latest commit subject; body = list of new commit messages.
+          title=$(git log -1 --pretty=%s "origin/$BRANCH")
+          body=$(printf 'Automated PR opened by the auto-pr workflow.\n\n## Commits\n\n%s\n' \
+            "$(git log --pretty='* %h %s' "origin/$BASE..origin/$BRANCH")")
+
+          gh pr create \
+            --base "$BASE" \
+            --head "$BRANCH" \
+            --title "$title" \
+            --body "$body"
