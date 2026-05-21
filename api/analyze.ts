@@ -15,6 +15,30 @@ import {
 
 export const config = { runtime: 'edge' };
 
+const ALLOWED_ORIGINS = [
+  'https://expenses-test.vercel.app',
+  'https://taxfix.com',
+  'https://www.taxfix.com',
+];
+
+const MAX_BODY_SIZE = 50_000; // ~50 KB
+
+function isAllowedOrigin(origin: string | null): boolean {
+  if (!origin) return false;
+  return ALLOWED_ORIGINS.some((allowed) => origin.startsWith(allowed));
+}
+
+function isValidInput(body: unknown): body is AnalysisInput {
+  if (!body || typeof body !== 'object') return false;
+  const b = body as Record<string, unknown>;
+  if (!Array.isArray(b.incomes)) return false;
+  if (typeof b.annualIncome !== 'string' && b.annualIncome !== undefined) return false;
+  if (!Array.isArray(b.selfEmployedExpenses)) return false;
+  if (!Array.isArray(b.landlordExpenses)) return false;
+  if (!Array.isArray(b.personalDetails)) return false;
+  return true;
+}
+
 const MODEL = process.env.GEMINI_MODEL || 'gemini-2.0-flash';
 
 const RESPONSE_SCHEMA = {
@@ -229,6 +253,11 @@ export default async function handler(req: Request): Promise<Response> {
     return Response.json({ error: 'Method not allowed' }, { status: 405 });
   }
 
+  const origin = req.headers.get('origin') ?? req.headers.get('referer');
+  if (!isAllowedOrigin(origin)) {
+    return Response.json({ error: 'Forbidden' }, { status: 403 });
+  }
+
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
     return Response.json(
@@ -237,9 +266,18 @@ export default async function handler(req: Request): Promise<Response> {
     );
   }
 
+  const rawBody = await req.text();
+  if (rawBody.length > MAX_BODY_SIZE) {
+    return Response.json({ error: 'Request body too large' }, { status: 413 });
+  }
+
   let input: AnalysisInput;
   try {
-    input = (await req.json()) as AnalysisInput;
+    const parsed: unknown = JSON.parse(rawBody);
+    if (!isValidInput(parsed)) {
+      return Response.json({ error: 'Invalid request' }, { status: 400 });
+    }
+    input = parsed;
   } catch {
     return Response.json({ error: 'Invalid JSON body' }, { status: 400 });
   }
