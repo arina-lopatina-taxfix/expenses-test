@@ -6,9 +6,7 @@
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src:
-    url('/fonts/abc-rom/ABCROM-Regular.woff2') format('woff2'),
-    url('/fonts/abc-rom/ABCROM-Regular.woff') format('woff');
+  src: url('/fonts/abc-rom/ABCROM-Regular.otf') format('opentype');
 }
 
 @font-face {
@@ -16,9 +14,7 @@
   font-style: normal;
   font-weight: 500;
   font-display: swap;
-  src:
-    url('/fonts/abc-rom/ABCROM-Medium.woff2') format('woff2'),
-    url('/fonts/abc-rom/ABCROM-Medium.woff') format('woff');
+  src: url('/fonts/abc-rom/ABCROM-Medium.otf') format('opentype');
 }
 
 @font-face {
@@ -26,9 +22,7 @@
   font-style: normal;
   font-weight: 700;
   font-display: swap;
-  src:
-    url('/fonts/abc-rom/ABCROM-Bold.woff2') format('woff2'),
-    url('/fonts/abc-rom/ABCROM-Bold.woff') format('woff');
+  src: url('/fonts/abc-rom/ABCROM-Bold.otf') format('opentype');
 }
 
 :root {
