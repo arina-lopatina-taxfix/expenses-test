@@ -23,28 +23,66 @@ jobs:
           BRANCH: ${{ github.ref_name }}
           BASE: master
         run: |
-          set -euo pipefail
+          set -uo pipefail
 
-          existing=$(gh pr list --head "$BRANCH" --base "$BASE" --state open --json number --jq '.[0].number' || true)
-          if [ -n "$existing" ]; then
+          echo "::group::Inputs"
+          echo "BRANCH=$BRANCH"
+          echo "BASE=$BASE"
+          gh auth status || true
+          echo "::endgroup::"
+
+          echo "::group::Look for an existing open PR"
+          # Use `// empty` so jq prints "" (not "null") when no PR exists.
+          existing=$(gh pr list \
+            --head "$BRANCH" --base "$BASE" --state open \
+            --json number --jq '.[0].number // empty' 2>/dev/null || true)
+          echo "existing PR number = '${existing:-<none>}'"
+          echo "::endgroup::"
+
+          if [ -n "${existing:-}" ]; then
             echo "PR #$existing already open for $BRANCH — nothing to do."
             exit 0
           fi
 
-          # Skip if the branch has no commits ahead of master.
-          ahead=$(git rev-list --count "origin/$BASE..origin/$BRANCH")
+          echo "::group::Check commits ahead of $BASE"
+          git fetch --no-tags origin "$BASE" "$BRANCH" 2>/dev/null || true
+          ahead=$(git rev-list --count "origin/$BASE..origin/$BRANCH" 2>/dev/null || echo 0)
+          echo "$ahead commits ahead of origin/$BASE"
+          echo "::endgroup::"
+
           if [ "$ahead" -eq 0 ]; then
             echo "No commits ahead of $BASE; skipping PR creation."
             exit 0
           fi
 
-          # Title = latest commit subject; body = list of new commit messages.
           title=$(git log -1 --pretty=%s "origin/$BRANCH")
           body=$(printf 'Automated PR opened by the auto-pr workflow.\n\n## Commits\n\n%s\n' \
             "$(git log --pretty='* %h %s' "origin/$BASE..origin/$BRANCH")")
 
-          gh pr create \
+          echo "::group::Create PR"
+          # If creation fails (permissions, race condition, etc), log the error
+          # but don't crash the workflow — the auto-merge workflow will pick up
+          # whatever PR ends up existing.
+          if ! gh pr create \
             --base "$BASE" \
             --head "$BRANCH" \
             --title "$title" \
             --body "$body"
+          then
+            cat <<MSG
+::error::gh pr create failed.
+
+Most common causes:
+  1) Repo Settings → Actions → General → Workflow permissions is set to
+     "Read repository contents and packages permissions" instead of
+     "Read and write permissions".
+  2) The same panel's checkbox "Allow GitHub Actions to create and approve
+     pull requests" is not ticked.
+  3) A closed/merged PR for $BRANCH still exists and is being matched —
+     reopen it instead of opening a new one.
+
+After fixing, push any commit to a claude/* branch to retry.
+MSG
+            exit 1
+          fi
+          echo "::endgroup::"
