@@ -146,6 +146,7 @@ function ensureBrevoStyles() {
     }
     :where(.sib-form-message-panel) { display: none; }
     :where(.sib-form-message-panel .sib-notification__icon) { width: 20px; height: 20px; }
+    #success-message { display: none !important; }
     #sib-container input:-ms-input-placeholder { font-family: Helvetica, sans-serif; text-align: left; color: #C0CCDA; }
     #sib-container input::placeholder { font-family: Helvetica, sans-serif; text-align: left; color: #C0CCDA; }
     #sib-container textarea::placeholder { font-family: Helvetica, sans-serif; text-align: left; color: #C0CCDA; }
@@ -192,7 +193,7 @@ function loadBrevoScript(): HTMLScriptElement {
   return script;
 }
 
-export function SignUp({ state }: ScreenProps) {
+export function SignUp({ state, goNext }: ScreenProps) {
   useEffect(() => {
     ensureStylesheet();
     ensureBrevoStyles();
@@ -208,11 +209,28 @@ export function SignUp({ state }: ScreenProps) {
     };
     fill();
     const t = window.setTimeout(fill, 50);
+
+    // Redirect to next screen when Brevo reveals the success panel.
+    // We check the inline style directly because our CSS hides the element
+    // with !important, so computedStyle always returns 'none'.
+    const successEl = document.getElementById('success-message');
+    let observer: MutationObserver | null = null;
+    if (successEl) {
+      observer = new MutationObserver(() => {
+        if (successEl.style.display !== 'none') {
+          observer?.disconnect();
+          goNext();
+        }
+      });
+      observer.observe(successEl, { attributes: true, attributeFilter: ['style', 'class'] });
+    }
+
     return () => {
       window.clearTimeout(t);
       script.remove();
+      observer?.disconnect();
     };
-  }, [state.firstName, state.email]);
+  }, [state.firstName, state.email, goNext]);
 
   return (
     <div className="app-shell app-shell--soft signup-wrap">
