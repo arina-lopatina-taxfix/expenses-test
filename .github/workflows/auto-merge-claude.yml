@@ -1,0 +1,28 @@
+name: Auto-merge Claude PRs
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, ready_for_review]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  enable-auto-merge:
+    if: startsWith(github.head_ref, 'claude/') && !github.event.pull_request.draft
+    runs-on: ubuntu-latest
+    steps:
+      - name: Enable auto-merge (squash); fall back to direct merge if no required checks
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+        run: |
+          # First try GitHub's native auto-merge so the PR waits for any
+          # required status checks (e.g. Vercel preview deploy, CI tests).
+          # If the repo has no required checks yet, gh exits non-zero with
+          # "Pull request is in clean status" — fall back to merging now.
+          if ! gh pr merge --auto --squash --delete-branch "$PR_URL"; then
+            echo "Auto-merge not applicable, attempting direct squash merge..."
+            gh pr merge --squash --delete-branch "$PR_URL"
+          fi
