@@ -15,7 +15,8 @@ export type Step =
   | 'landlord-expenses'
   | 'personal-details'
   | 'sign-up'
-  | 'results';
+  | 'results'
+  | 'claim-back';
 
 export type FlowState = {
   step: Step;
@@ -76,7 +77,7 @@ function computePath(state: FlowState): Step[] {
   if (isLandlord(state.incomes)) {
     path.push('landlord-expenses');
   }
-  path.push('personal-details', 'sign-up', 'results');
+  path.push('personal-details', 'sign-up', 'results', 'claim-back');
   return path;
 }
 
@@ -99,6 +100,8 @@ export function nextStep(state: FlowState): Step {
       return 'sign-up';
     case 'sign-up':
       return 'results';
+    case 'results':
+      return 'claim-back';
     default:
       return state.step;
   }

@@ -9,7 +9,7 @@ type FetchState =
   | { status: 'ready'; data: AnalysisResponse }
   | { status: 'error'; message: string; data?: AnalysisResponse };
 
-export function Results({ state, goBack }: ScreenProps) {
+export function Results({ state, goBack, goNext }: ScreenProps) {
   const [fetchState, setFetchState] = useState<FetchState>({ status: 'loading' });
 
   useEffect(() => {
@@ -84,7 +84,7 @@ export function Results({ state, goBack }: ScreenProps) {
     return (
       <div className="app-shell app-shell--soft results">
         <main className="results__loading">
-          <p className="results__loading-text">Couldn’t load your analysis.</p>
+          <p className="results__loading-text">Couldn't load your analysis.</p>
           <p className="results__loading-sub">
             {fetchState.status === 'error' ? fetchState.message : ''}
           </p>
@@ -97,7 +97,7 @@ export function Results({ state, goBack }: ScreenProps) {
   return (
     <div className="app-shell app-shell--soft results">
       <header className="results__hero">
-        <p className="results__eyebrow">TAX RETURN 2024/25</p>
+        <p className="results__eyebrow">TAX RETURN 2025/26</p>
         <h1 className="results__title">
           You could have claimed{' '}
           <span className="results__title-amount">
@@ -106,16 +106,32 @@ export function Results({ state, goBack }: ScreenProps) {
           more
         </h1>
         <p className="results__lede">
-          We compared your answers with others from people in a similar income
-          bracket and the same type of income. Here’s what’s on your return —
-          and what you might be missing. All numbers shown are illustrative
-          only.
+          We compared your 2025/26 tax return with others from people in a
+          similar income bracket and the same type of income. Here's what's on
+          your return — and what you might be missing. All numbers shown are
+          illustrative only. You can also upload your tax return to get a more
+          precise answer.
         </p>
         {fetchState.status === 'error' && (
           <p className="results__warning">
             Showing a fallback summary — {fetchState.message}
           </p>
         )}
+        <div className="results__hero-ctas">
+          <Button variant="primary" size="large" onClick={goNext}>
+            Help me claim it back
+          </Button>
+          <Button
+            as="a"
+            href="https://taxfix.com/en-uk/expenses-analysis/"
+            target="_blank"
+            rel="noopener noreferrer"
+            variant="tertiary"
+            size="large"
+          >
+            Upload my tax return
+          </Button>
+        </div>
       </header>
 
       <section className="results__body">
@@ -203,8 +219,8 @@ export function Results({ state, goBack }: ScreenProps) {
         </div>
       </section>
 
-      <div className="footer">
-        {goBack ? (
+      {goBack && (
+        <div className="footer">
           <Button
             variant="tertiary"
             size="large"
@@ -213,18 +229,8 @@ export function Results({ state, goBack }: ScreenProps) {
           >
             Back
           </Button>
-        ) : (
-          <span />
-        )}
-        <Button
-          variant="primary"
-          size="large"
-          onClick={() => window.print()}
-          startIcon={<span aria-hidden="true">⬇</span>}
-        >
-          Download summary
-        </Button>
-      </div>
+        </div>
+      )}
     </div>
   );
 }

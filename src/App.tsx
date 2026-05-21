@@ -10,6 +10,7 @@ import { LandlordExpenses } from './screens/LandlordExpenses';
 import { PersonalDetails } from './screens/PersonalDetails';
 import { SignUp } from './screens/SignUp';
 import { Results } from './screens/Results';
+import { ClaimBack } from './screens/ClaimBack';
 
 export default function App() {
   const [state, setState] = useState<FlowState>(initialState);
@@ -70,5 +71,7 @@ export default function App() {
       return <SignUp {...screenProps} />;
     case 'results':
       return <Results {...screenProps} />;
+    case 'claim-back':
+      return <ClaimBack {...screenProps} />;
   }
 }
