@@ -30,11 +30,10 @@ export function PersonalDetails({
         <div className="step__inner">
           <header className="step__heading">
             <h1 className="ds-h1">
-              Enter your total income for the year before tax
+              Tell us more about your situation
             </h1>
             <p className="ds-subtitle">
-              Select all that apply so we can check for any credits and
-              deductions available to you
+              Select all that apply so we can find you eligible credits and deductions.
             </p>
           </header>
           <div className="options">
