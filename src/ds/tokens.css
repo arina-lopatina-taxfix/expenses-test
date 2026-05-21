@@ -1,6 +1,6 @@
 /* Design system tokens from Figma Global Styles library */
 
-/* ---------- ABC ROM webfont (3 weights used in Figma) ---------- */
+/* ---------- ABC ROM webfont (4 weights from public/fonts/abc-rom) ---------- */
 @font-face {
   font-family: 'ABC ROM';
   font-style: normal;
@@ -23,6 +23,18 @@
   font-weight: 700;
   font-display: swap;
   src: url('/fonts/abc-rom/ABCROM-Bold.otf') format('opentype');
+}
+
+/* ABC ROM Extended Heavy — used for very-large display headings.
+   Exposed as font-family 'ABC ROM Extended' so it can be opted into
+   explicitly rather than implicitly bound to a numeric weight on
+   the base family. */
+@font-face {
+  font-family: 'ABC ROM Extended';
+  font-style: normal;
+  font-weight: 900;
+  font-display: swap;
+  src: url('/fonts/abc-rom/ABCROMExtended-Heavy.otf') format('opentype');
 }
 
 :root {
