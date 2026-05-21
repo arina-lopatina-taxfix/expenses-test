@@ -11,6 +11,7 @@ import { PersonalDetails } from './screens/PersonalDetails';
 import { SignUp } from './screens/SignUp';
 import { Results } from './screens/Results';
 import { ClaimBack } from './screens/ClaimBack';
+import { GetHelp } from './screens/GetHelp';
 
 export default function App() {
   const [state, setState] = useState<FlowState>(initialState);
@@ -67,6 +68,8 @@ export default function App() {
       return <LandlordExpenses {...screenProps} />;
     case 'personal-details':
       return <PersonalDetails {...screenProps} />;
+    case 'get-help':
+      return <GetHelp {...screenProps} />;
     case 'sign-up':
       return <SignUp {...screenProps} />;
     case 'results':

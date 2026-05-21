@@ -14,6 +14,7 @@ export type Step =
   | 'self-employed-expenses'
   | 'landlord-expenses'
   | 'personal-details'
+  | 'get-help'
   | 'sign-up'
   | 'results'
   | 'claim-back';
@@ -68,7 +69,7 @@ export function progressFor(step: Step, state: FlowState): number {
 function computePath(state: FlowState): Step[] {
   const path: Step[] = ['income-sources'];
   if (!hasQualifying(state.incomes) && state.step !== 'income-sources') {
-    return ['income-sources', 'mistake'];
+    return ['income-sources', 'personal-details', 'get-help'];
   }
   path.push('annual-income');
   if (isSelfEmployed(state.incomes)) {
@@ -84,7 +85,7 @@ function computePath(state: FlowState): Step[] {
 export function nextStep(state: FlowState): Step {
   switch (state.step) {
     case 'income-sources':
-      return hasQualifying(state.incomes) ? 'annual-income' : 'mistake';
+      return hasQualifying(state.incomes) ? 'annual-income' : 'personal-details';
     case 'annual-income':
       if (isSelfEmployed(state.incomes)) return 'business-nature';
       if (isLandlord(state.incomes)) return 'landlord-expenses';
@@ -97,7 +98,7 @@ export function nextStep(state: FlowState): Step {
     case 'landlord-expenses':
       return 'personal-details';
     case 'personal-details':
-      return 'sign-up';
+      return hasQualifying(state.incomes) ? 'sign-up' : 'get-help';
     case 'sign-up':
       return 'results';
     case 'results':
