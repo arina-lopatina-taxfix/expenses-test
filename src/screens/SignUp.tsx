@@ -146,7 +146,7 @@ function ensureBrevoStyles() {
     }
     :where(.sib-form-message-panel) { display: none; }
     :where(.sib-form-message-panel .sib-notification__icon) { width: 20px; height: 20px; }
-    #success-message { display: none !important; }
+    #success-message { visibility: hidden !important; opacity: 0 !important; }
     #sib-container input:-ms-input-placeholder { font-family: Helvetica, sans-serif; text-align: left; color: #C0CCDA; }
     #sib-container input::placeholder { font-family: Helvetica, sans-serif; text-align: left; color: #C0CCDA; }
     #sib-container textarea::placeholder { font-family: Helvetica, sans-serif; text-align: left; color: #C0CCDA; }
@@ -210,19 +210,24 @@ export function SignUp({ state, goNext }: ScreenProps) {
     fill();
     const t = window.setTimeout(fill, 50);
 
-    // Redirect to next screen when Brevo reveals the success panel.
-    // We check the inline style directly because our CSS hides the element
-    // with !important, so computedStyle always returns 'none'.
-    const successEl = document.getElementById('success-message');
+    // Navigate to results when Brevo reveals the success panel.
+    // We hide it with visibility:hidden (not display:none) so getComputedStyle
+    // can still detect when Brevo flips its display property to show it.
+    const container = document.getElementById('sib-form-container');
     let observer: MutationObserver | null = null;
-    if (successEl) {
+    if (container) {
       observer = new MutationObserver(() => {
-        if (successEl.style.display !== 'none') {
+        const successEl = document.getElementById('success-message');
+        if (successEl && window.getComputedStyle(successEl).display !== 'none') {
           observer?.disconnect();
           goNext();
         }
       });
-      observer.observe(successEl, { attributes: true, attributeFilter: ['style', 'class'] });
+      observer.observe(container, {
+        subtree: true,
+        attributes: true,
+        attributeFilter: ['style', 'class'],
+      });
     }
 
     return () => {
