@@ -111,7 +111,7 @@ button {
   flex-direction: column;
   gap: 12px;
   width: 100%;
-  align-items: stretch;
+  align-items: center;
 }
 
 .option-card {
