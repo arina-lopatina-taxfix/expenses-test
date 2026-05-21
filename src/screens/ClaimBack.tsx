@@ -4,7 +4,7 @@ import type { ScreenProps } from './types';
 const IMG_CHECKLIST =
   'https://www.figma.com/api/mcp/asset/594e9f6d-6dbe-4d9a-82d4-b9bc6ec2fb45';
 
-export function ClaimBack({ goBack }: ScreenProps) {
+export function ClaimBack(_: ScreenProps) {
   return (
     <div className="app-shell">
       <main className="claim-back">
@@ -41,18 +41,6 @@ export function ClaimBack({ goBack }: ScreenProps) {
             File an amendment
           </Button>
         </div>
-        {goBack && (
-          <div className="footer">
-            <Button
-              variant="tertiary"
-              size="large"
-              onClick={goBack}
-              startIcon={<span aria-hidden="true">←</span>}
-            >
-              Back
-            </Button>
-          </div>
-        )}
       </main>
     </div>
   );
