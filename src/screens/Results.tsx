@@ -181,7 +181,6 @@ export function Results({ state, goBack, goNext }: ScreenProps) {
             <div className="results__section">
               <div className="results__section-header">
                 <h2 className="ds-h4">What can be improved</h2>
-                <Chip variant="ghost">{data.improvements.length} categories</Chip>
               </div>
               <div className="results__items">
                 {data.improvements.map((item, i) => (
@@ -218,6 +217,17 @@ export function Results({ state, goBack, goNext }: ScreenProps) {
           )}
         </div>
       </section>
+
+      <div className="results__download-bar">
+        <Button
+          variant="secondary"
+          size="large"
+          onClick={() => window.print()}
+          startIcon={<span aria-hidden="true">⬇</span>}
+        >
+          Download summary
+        </Button>
+      </div>
 
       {goBack && (
         <div className="footer">
