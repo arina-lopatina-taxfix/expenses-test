@@ -28,6 +28,11 @@ button {
   background: #ffffff;
   display: flex;
   flex-direction: column;
+  align-items: center;
+}
+
+.app-shell > * {
+  width: 100%;
 }
 
 .app-shell--soft {
@@ -54,6 +59,7 @@ button {
 .step {
   position: relative;
   flex: 1;
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -68,8 +74,16 @@ button {
   gap: 36px;
   width: 560px;
   max-width: 100%;
+  margin: 0 auto;
   position: relative;
   z-index: 1;
+  text-align: center;
+}
+
+.step__inner .ds-button,
+.step__inner .ds-field,
+.step__inner > .options {
+  align-self: center;
 }
 
 .step__inner--tight {
@@ -120,6 +134,7 @@ button {
   gap: 5px;
   flex: 1;
   min-width: 0;
+  text-align: left;
 }
 
 .option-card__title {
@@ -149,12 +164,14 @@ button {
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 100%;
   padding: 48px 64px 120px;
   gap: 36px;
 }
 
 .scroll-step .step__inner {
   gap: 36px;
+  margin: 0 auto;
 }
 
 /* ---------- Mistake screen ---------- */
@@ -165,6 +182,7 @@ button {
   gap: 24px;
   width: 560px;
   max-width: 100%;
+  margin: 0 auto;
   text-align: center;
 }
 
@@ -200,6 +218,7 @@ button {
 .signup-wrap {
   background: #eff2f7;
   min-height: 100vh;
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -210,6 +229,7 @@ button {
   width: 100%;
   display: flex;
   justify-content: center;
+  margin: 0 auto;
 }
 
 /* Override Brevo's hardcoded Helvetica inline styles so the embed
@@ -237,6 +257,7 @@ button {
   flex-direction: column;
   align-items: center;
   gap: 6px;
+  width: 100%;
 }
 
 .results__eyebrow {
@@ -287,11 +308,13 @@ button {
   flex-direction: column;
   align-items: center;
   gap: 48px;
+  width: 100%;
 }
 
 .results__inner {
   width: 900px;
   max-width: calc(100% - 48px);
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
   gap: 48px;
@@ -465,6 +488,7 @@ button {
 /* Prefill / analysing screen (Figma 5688:19342) */
 .prefill {
   flex: 1;
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
