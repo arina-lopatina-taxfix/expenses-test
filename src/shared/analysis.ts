@@ -46,3 +46,8 @@ export type AnalysisResponse = {
   alreadyExpensing: AlreadyExpensingItem[];
   improvements: ImprovementItem[];
 };
+
+export type AnalysisCache =
+  | { status: 'ready'; data: AnalysisResponse }
+  | { status: 'error'; message: string; data?: AnalysisResponse }
+  | null;

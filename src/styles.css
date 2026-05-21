@@ -524,6 +524,12 @@ button {
   justify-content: center;
 }
 
+.prefill__illustration {
+  width: 280px;
+  height: auto;
+  object-fit: contain;
+}
+
 .prefill__lines {
   display: flex;
   flex-direction: column;

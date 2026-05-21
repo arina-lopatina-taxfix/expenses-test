@@ -9,6 +9,7 @@ import { SelfEmployedExpenses } from './screens/SelfEmployedExpenses';
 import { LandlordExpenses } from './screens/LandlordExpenses';
 import { PersonalDetails } from './screens/PersonalDetails';
 import { SignUp } from './screens/SignUp';
+import { Analyzing } from './screens/Analyzing';
 import { Results } from './screens/Results';
 import { ClaimBack } from './screens/ClaimBack';
 import { GetHelp } from './screens/GetHelp';
@@ -72,6 +73,8 @@ export default function App() {
       return <GetHelp {...screenProps} />;
     case 'sign-up':
       return <SignUp {...screenProps} />;
+    case 'analyzing':
+      return <Analyzing {...screenProps} />;
     case 'results':
       return <Results {...screenProps} />;
     case 'claim-back':

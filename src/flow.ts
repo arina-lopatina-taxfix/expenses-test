@@ -1,3 +1,5 @@
+import type { AnalysisCache } from './shared/analysis';
+
 export type IncomeSource =
   | 'employment'
   | 'self-employment'
@@ -16,6 +18,7 @@ export type Step =
   | 'personal-details'
   | 'get-help'
   | 'sign-up'
+  | 'analyzing'
   | 'results'
   | 'claim-back';
 
@@ -30,6 +33,7 @@ export type FlowState = {
   personalDetails: string[];
   firstName: string;
   email: string;
+  analysisCache: AnalysisCache;
 };
 
 export const initialState: FlowState = {
@@ -43,6 +47,7 @@ export const initialState: FlowState = {
   personalDetails: [],
   firstName: '',
   email: '',
+  analysisCache: null,
 };
 
 export const QUALIFYING: IncomeSource[] = ['self-employment', 'rental'];
@@ -78,7 +83,7 @@ function computePath(state: FlowState): Step[] {
   if (isLandlord(state.incomes)) {
     path.push('landlord-expenses');
   }
-  path.push('personal-details', 'sign-up', 'results', 'claim-back');
+  path.push('personal-details', 'sign-up', 'analyzing', 'results', 'claim-back');
   return path;
 }
 
@@ -100,6 +105,8 @@ export function nextStep(state: FlowState): Step {
     case 'personal-details':
       return hasQualifying(state.incomes) ? 'sign-up' : 'get-help';
     case 'sign-up':
+      return 'analyzing';
+    case 'analyzing':
       return 'results';
     case 'results':
       return 'claim-back';
