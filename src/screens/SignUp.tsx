@@ -30,7 +30,7 @@ const BREVO_FORM_HTML = `
           </div>
         </div>
         <div style="padding: 8px 0;">
-          <div class="sib-form-block" style="font-family:Helvetica, sans-serif; font-size:16px; text-align:center; color:#0C0B0A; background-color:transparent;">
+          <div class="sib-form-block" style="font-family:Helvetica, sans-serif; font-size:16px; text-align:center; color:#0C0B0A; background-color:transparent; opacity:0.7;">
             <div class="sib-text-form-block">
               <p>Enter your details to see where you could claim back expenses and avoid leaving money on the table</p>
             </div>
@@ -151,6 +151,10 @@ function ensureBrevoStyles() {
     #sib-container input::placeholder { font-family: Helvetica, sans-serif; text-align: left; color: #C0CCDA; }
     #sib-container textarea::placeholder { font-family: Helvetica, sans-serif; text-align: left; color: #C0CCDA; }
     #sib-container a { text-decoration: underline; color: #2BB2FC; }
+    #sib-container .input_replaced:checked + .checkbox_tick_positive {
+      background-color: #A0D766 !important;
+      border-color: #A0D766 !important;
+    }
   `;
   document.head.appendChild(style);
 }
