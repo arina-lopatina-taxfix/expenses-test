@@ -48,6 +48,63 @@ export const PERSONAL_DETAIL_LABELS: Record<string, string> = {
   renter: '🏠 Renter',
 };
 
+export const EMPLOYMENT_CATEGORIES: CategoryDef[] = [
+  { id: 'wfh-employed', emoji: '🏠', title: 'Working from Home' },
+  { id: 'professional-subs', emoji: '🎟️', title: 'Professional Subscriptions' },
+  { id: 'uniform', emoji: '👔', title: 'Uniform & Protective Clothing' },
+  { id: 'tools-employed', emoji: '🛠️', title: 'Tools & Equipment' },
+  { id: 'mileage', emoji: '🚗', title: 'Business Mileage' },
+  { id: 'pension-employed', emoji: '💰', title: 'Personal Pension Contributions' },
+  { id: 'p800', emoji: '💷', title: 'PAYE Overpayment (P800)' },
+];
+
+export const DIVIDENDS_CATEGORIES: CategoryDef[] = [
+  { id: 'isa', emoji: '💳', title: 'ISA Allowance' },
+  { id: 'capital-losses', emoji: '📉', title: 'Capital Losses Offset' },
+  { id: 'pension-dividends', emoji: '💰', title: 'Pension Contributions' },
+];
+
+export const SOLD_ASSETS_CATEGORIES: CategoryDef[] = [
+  { id: 'cgt-allowance', emoji: '📊', title: 'Capital Gains Annual Allowance' },
+  { id: 'eis-seis', emoji: '📈', title: 'EIS / SEIS Relief' },
+  { id: 'capital-losses-assets', emoji: '📉', title: 'Capital Losses Offset' },
+  { id: 'ppr', emoji: '🏡', title: "Principal Private Residence Relief" },
+];
+
+export const FOREIGN_INCOME_CATEGORIES: CategoryDef[] = [
+  { id: 'foreign-tax-credit', emoji: '🌎', title: 'Foreign Tax Credit Relief' },
+  { id: 'double-taxation', emoji: '📋', title: 'Double Taxation Treaty Relief' },
+  { id: 'remittance', emoji: '💱', title: 'Remittance Basis' },
+];
+
+export const PERSONAL_DETAIL_CATEGORIES: Record<string, CategoryDef[]> = {
+  married: [
+    { id: 'marriage-allowance', emoji: '💍', title: 'Marriage Allowance' },
+    { id: 'married-couples-allowance', emoji: '💍', title: "Married Couple's Allowance" },
+  ],
+  dependants: [
+    { id: 'child-benefit', emoji: '👶🏻', title: 'Child Benefit' },
+    { id: 'tax-free-childcare', emoji: '🧸', title: 'Tax-Free Childcare' },
+    { id: 'working-tax-credit', emoji: '👨‍👩‍👧', title: 'Working Tax Credit' },
+  ],
+  'student-loan': [
+    { id: 'student-loan-plan', emoji: '🎓', title: 'Student Loan Plan Review' },
+  ],
+  homeowner: [
+    { id: 'property-allowance', emoji: '🔑', title: 'Property Income Allowance' },
+  ],
+  renter: [
+    { id: 'rent-a-room', emoji: '🏠', title: 'Rent a Room Relief' },
+  ],
+};
+
+export const INCOME_TYPE_CATEGORIES: Partial<Record<IncomeSource, CategoryDef[]>> = {
+  employment: EMPLOYMENT_CATEGORIES,
+  dividends: DIVIDENDS_CATEGORIES,
+  'sold-assets': SOLD_ASSETS_CATEGORIES,
+  foreign: FOREIGN_INCOME_CATEGORIES,
+};
+
 export function resolveSelfEmployedCategory(id: string): CategoryDef | undefined {
   return SELF_EMPLOYED_CATEGORIES.find((c) => c.id === id);
 }

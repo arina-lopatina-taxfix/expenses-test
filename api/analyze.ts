@@ -4,7 +4,9 @@ import type {
 } from '../src/shared/analysis';
 import {
   INCOME_SOURCE_LABELS,
+  INCOME_TYPE_CATEGORIES,
   LANDLORD_CATEGORIES,
+  PERSONAL_DETAIL_CATEGORIES,
   PERSONAL_DETAIL_LABELS,
   SELF_EMPLOYED_CATEGORIES,
   resolveLandlordCategory,
@@ -66,7 +68,7 @@ const RESPONSE_SCHEMA = {
     improvements: {
       type: 'array',
       description:
-        '2-4 categories or specific deductibles the user did NOT tick but plausibly could claim given their answers. Each must have a real, specific advice paragraph and 3-5 example deductibles with realistic GBP amounts.',
+        'All categories and reliefs the user has not yet claimed but plausibly could, covering: unticked expense categories, deductions relevant to their income types, and credits/reliefs from their personal situation. Each must have a real, specific advice paragraph and 3-5 example deductibles with realistic GBP amounts.',
       items: {
         type: 'object',
         properties: {
@@ -122,6 +124,7 @@ function resolveContext(input: AnalysisInput) {
       : []),
   ].filter((c): c is NonNullable<typeof c> => Boolean(c));
 
+  // Unticked expense categories from the expense screens
   const expensesNotTicked = (
     isSelfEmployed
       ? SELF_EMPLOYED_CATEGORIES.filter(
@@ -136,6 +139,15 @@ function resolveContext(input: AnalysisInput) {
       : [],
   );
 
+  // Deduction categories for non-self-employed / non-landlord income sources
+  const incomeTypeSuggestions = input.incomes
+    .filter((src) => src !== 'self-employment' && src !== 'rental')
+    .flatMap((src) => INCOME_TYPE_CATEGORIES[src] ?? []);
+
+  // Credits and reliefs based on personal-detail selections
+  const personalDetailSuggestions = input.personalDetails
+    .flatMap((id) => PERSONAL_DETAIL_CATEGORIES[id] ?? []);
+
   const personalDetailLabels = input.personalDetails
     .map((id) => PERSONAL_DETAIL_LABELS[id] ?? id)
     .join(', ');
@@ -146,6 +158,8 @@ function resolveContext(input: AnalysisInput) {
     incomeLabels,
     expensesAlreadyTicked,
     expensesNotTicked,
+    incomeTypeSuggestions,
+    personalDetailSuggestions,
     personalDetailLabels,
   };
 }
@@ -164,7 +178,11 @@ Critical rules:
 - profile.role MUST reflect the income types they selected: ${ctx.incomeLabels.join(', ') || 'none'}.
 - profile.chips should include the income (£${input.annualIncome || 'unspecified'}) and any of these life events that apply: ${ctx.personalDetailLabels || 'none'}. If they entered a business nature ("${input.businessNature || ''}"), include a 1-2 word industry chip from it.
 - alreadyExpensing MUST contain exactly one entry per category the user ticked. There are ${ctx.expensesAlreadyTicked.length} such categories: ${ctx.expensesAlreadyTicked.map((c) => `${c.emoji} ${c.title}`).join(', ') || 'none'}. Use the supplied emoji and title verbatim. Do NOT invent extra entries. Do NOT include any amount or numbers in this section.
-- improvements should suggest 2-4 categories the user did NOT tick but plausibly could claim, drawn from this list: ${ctx.expensesNotTicked.map((c) => `${c.emoji} ${c.title}`).join(', ') || '(no untouched categories)'}. Use the supplied emoji and title verbatim.
+- improvements should cover ALL categories the user could plausibly benefit from but has not yet claimed. Draw from ALL THREE of these lists and include every relevant item:
+  1. Unticked expense categories: ${ctx.expensesNotTicked.map((c) => `${c.emoji} ${c.title}`).join(', ') || '(none)'}
+  2. Deductions for their other income types (${input.incomes.filter((s) => s !== 'self-employment' && s !== 'rental').join(', ') || 'none'}): ${ctx.incomeTypeSuggestions.map((c) => `${c.emoji} ${c.title}`).join(', ') || '(none)'}
+  3. Credits & reliefs from their personal situation (${ctx.personalDetailLabels || 'none'}): ${ctx.personalDetailSuggestions.map((c) => `${c.emoji} ${c.title}`).join(', ') || '(none)'}
+  Use the supplied emoji and title verbatim. Include all that are genuinely relevant; do not cap at 4 if more are applicable.
 - Every "advice" string must be specific, helpful, and grounded in the user's circumstances. NEVER write "Lorem ipsum", placeholders, or generic filler.
 - All monetary amounts must be plausible relative to their stated annual income of £${input.annualIncome || 'unknown'}.
 
