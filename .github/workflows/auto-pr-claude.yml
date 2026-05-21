@@ -32,20 +32,19 @@ jobs:
           echo "::endgroup::"
 
           echo "::group::Look for an existing open PR"
-          # Use `// empty` so jq prints "" (not "null") when no PR exists.
           existing=$(gh pr list \
             --head "$BRANCH" --base "$BASE" --state open \
-            --json number --jq '.[0].number // empty' 2>/dev/null || true)
+            --json number --jq '.[0].number // empty' 2>&1 || true)
           echo "existing PR number = '${existing:-<none>}'"
           echo "::endgroup::"
 
-          if [ -n "${existing:-}" ]; then
+          if [ -n "${existing:-}" ] && [[ "$existing" =~ ^[0-9]+$ ]]; then
             echo "PR #$existing already open for $BRANCH — nothing to do."
             exit 0
           fi
 
           echo "::group::Check commits ahead of $BASE"
-          git fetch --no-tags origin "$BASE" "$BRANCH" 2>/dev/null || true
+          git fetch --no-tags origin "$BASE" "$BRANCH" 2>&1 || true
           ahead=$(git rev-list --count "origin/$BASE..origin/$BRANCH" 2>/dev/null || echo 0)
           echo "$ahead commits ahead of origin/$BASE"
           echo "::endgroup::"
@@ -56,24 +55,35 @@ jobs:
           fi
 
           title=$(git log -1 --pretty=%s "origin/$BRANCH")
-          body=$(printf 'Automated PR opened by the auto-pr workflow.\n\n## Commits\n\n%s\n' \
-            "$(git log --pretty='* %h %s' "origin/$BASE..origin/$BRANCH")")
+          # Plain text body — no markdown that gh might try to escape.
+          body="Automated PR opened by the auto-pr workflow. ${ahead} new commit(s) on ${BRANCH}."
+
+          echo "::group::Inputs to gh pr create"
+          echo "title=$title"
+          echo "body=$body"
+          echo "::endgroup::"
 
           echo "::group::Create PR"
-          if ! gh pr create \
+          # Capture gh's stderr+stdout into a variable so we can see the
+          # real error message instead of just exit 1.
+          set +e
+          output=$(gh pr create \
             --base "$BASE" \
             --head "$BRANCH" \
             --title "$title" \
-            --body "$body"
-          then
-            echo "::error::gh pr create failed. Likely causes:"
+            --body "$body" 2>&1)
+          rc=$?
+          set -e
+          echo "$output"
+          echo "::endgroup::"
+
+          if [ "$rc" -ne 0 ]; then
+            echo "::error::gh pr create failed with exit $rc. See the 'Create PR' log group above for the raw output. Common causes:"
             echo "  1) Settings -> Actions -> General -> Workflow permissions"
-            echo "     set to 'Read repository contents and packages permissions'"
-            echo "     instead of 'Read and write permissions'."
-            echo "  2) The same panel's 'Allow GitHub Actions to create and"
-            echo "     approve pull requests' checkbox is not ticked."
-            echo "  3) A closed/merged PR for $BRANCH still exists and is being"
-            echo "     matched -- reopen it instead of opening a new one."
+            echo "     not set to 'Read and write permissions'."
+            echo "  2) 'Allow GitHub Actions to create and approve pull"
+            echo "     requests' checkbox not ticked."
+            echo "  3) A closed PR with the same head+base still in the way."
+            echo "  4) Branch has no commits ahead of base."
             exit 1
           fi
-          echo "::endgroup::"
