@@ -60,29 +60,20 @@ jobs:
             "$(git log --pretty='* %h %s' "origin/$BASE..origin/$BRANCH")")
 
           echo "::group::Create PR"
-          # If creation fails (permissions, race condition, etc), log the error
-          # but don't crash the workflow — the auto-merge workflow will pick up
-          # whatever PR ends up existing.
           if ! gh pr create \
             --base "$BASE" \
             --head "$BRANCH" \
             --title "$title" \
             --body "$body"
           then
-            cat <<MSG
-::error::gh pr create failed.
-
-Most common causes:
-  1) Repo Settings → Actions → General → Workflow permissions is set to
-     "Read repository contents and packages permissions" instead of
-     "Read and write permissions".
-  2) The same panel's checkbox "Allow GitHub Actions to create and approve
-     pull requests" is not ticked.
-  3) A closed/merged PR for $BRANCH still exists and is being matched —
-     reopen it instead of opening a new one.
-
-After fixing, push any commit to a claude/* branch to retry.
-MSG
+            echo "::error::gh pr create failed. Likely causes:"
+            echo "  1) Settings -> Actions -> General -> Workflow permissions"
+            echo "     set to 'Read repository contents and packages permissions'"
+            echo "     instead of 'Read and write permissions'."
+            echo "  2) The same panel's 'Allow GitHub Actions to create and"
+            echo "     approve pull requests' checkbox is not ticked."
+            echo "  3) A closed/merged PR for $BRANCH still exists and is being"
+            echo "     matched -- reopen it instead of opening a new one."
             exit 1
           fi
           echo "::endgroup::"
