@@ -84,7 +84,7 @@
   font-weight: 500;
   border: none;
   cursor: pointer;
-  border-radius: var(--ds-radius-full);
+  border-radius: 15px;
   transition:
     filter 120ms ease,
     background 120ms ease,
