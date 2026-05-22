@@ -68,7 +68,7 @@ const BREVO_FORM_HTML = `
               <div class="form__label-row ">
                 <div class="entry__choice" style="">
                   <label>
-                    <input type="checkbox" class="input_replaced" value="1" id="MARKETING_CONSENT" name="MARKETING_CONSENT" />
+                    <input type="checkbox" class="input_replaced" value="1" id="MARKETING_CONSENT" name="MARKETING_CONSENT" checked />
                     <span class="checkbox checkbox_tick_positive"></span><span style="font-family:Helvetica, sans-serif; font-size:14px; text-align:left; color:#0C0B0A; background-color:transparent;"><p>I agree to email marketing from Taxfix and accept the data privacy statement.</p></span>
                   </label>
                 </div>
@@ -208,8 +208,10 @@ export function SignUp({ state, goNext }: ScreenProps) {
     const fill = () => {
       const first = document.getElementById('FIRSTNAME') as HTMLInputElement | null;
       const email = document.getElementById('EMAIL') as HTMLInputElement | null;
+      const consent = document.getElementById('MARKETING_CONSENT') as HTMLInputElement | null;
       if (first && state.firstName) first.value = state.firstName;
       if (email && state.email) email.value = state.email;
+      if (consent) consent.checked = true;
     };
     fill();
     const t = window.setTimeout(fill, 50);
