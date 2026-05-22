@@ -83,7 +83,7 @@ function computePath(state: FlowState): Step[] {
   if (isLandlord(state.incomes)) {
     path.push('landlord-expenses');
   }
-  path.push('personal-details', 'sign-up', 'analyzing', 'results', 'claim-back');
+  path.push('personal-details', 'analyzing', 'sign-up', 'results', 'claim-back');
   return path;
 }
 
@@ -103,10 +103,10 @@ export function nextStep(state: FlowState): Step {
     case 'landlord-expenses':
       return 'personal-details';
     case 'personal-details':
-      return hasQualifying(state.incomes) ? 'sign-up' : 'get-help';
-    case 'sign-up':
-      return 'analyzing';
+      return hasQualifying(state.incomes) ? 'analyzing' : 'get-help';
     case 'analyzing':
+      return 'sign-up';
+    case 'sign-up':
       return 'results';
     case 'results':
       return 'claim-back';
