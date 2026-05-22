@@ -25,6 +25,10 @@ const MAX_BODY_SIZE = 50_000; // ~50 KB
 
 function isAllowedOrigin(origin: string | null): boolean {
   if (!origin) return false;
+  // Allow any localhost port for local development
+  if (/^https?:\/\/localhost(:\d+)?$/.test(origin)) return true;
+  // Allow all Vercel preview deployments for this project
+  if (/^https:\/\/expenses-test[a-z0-9-]*\.vercel\.app$/.test(origin)) return true;
   return ALLOWED_ORIGINS.some((allowed) => origin.startsWith(allowed));
 }
 
