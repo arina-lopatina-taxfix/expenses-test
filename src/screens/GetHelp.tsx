@@ -1,4 +1,3 @@
-import { IdCardIcon } from '../components/IdCardIcon';
 import { Button } from '../ds';
 import { INCOME_SOURCE_LABELS } from '../shared/categories';
 import type { ScreenProps } from './types';
@@ -22,7 +21,7 @@ export function GetHelp({ state }: ScreenProps) {
       <main className="step">
         <div className="mistake">
           <div className="mistake__icon" aria-hidden="true">
-            <IdCardIcon />
+            <img src="/fonts/abc-rom/search.png" alt="" width="220" />
           </div>
           <div className="mistake__heading">
             <h1 className="ds-h1">Don't miss out on tax reliefs you could claim</h1>
