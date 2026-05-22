@@ -1,4 +1,5 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { Analytics } from '@vercel/analytics/react';
 import { initialState, nextStep, progressFor } from './flow';
 import type { FlowState, Step } from './flow';
 import { IncomeSources } from './screens/IncomeSources';
@@ -13,6 +14,7 @@ import { Analyzing } from './screens/Analyzing';
 import { Results } from './screens/Results';
 import { ClaimBack } from './screens/ClaimBack';
 import { GetHelp } from './screens/GetHelp';
+import posthog from './posthog';
 
 export default function App() {
   const [state, setState] = useState<FlowState>(initialState);
@@ -43,6 +45,12 @@ export default function App() {
 
   const restart = useCallback(() => setState(initialState), []);
 
+  useEffect(() => {
+    posthog.capture('$pageview', {
+      $current_url: `${window.location.origin}/${state.step}`,
+    });
+  }, [state.step]);
+
   const progress = progressFor(state.step, state);
 
   const screenProps = {
@@ -54,30 +62,39 @@ export default function App() {
     progress,
   };
 
-  switch (state.step as Step) {
-    case 'income-sources':
-      return <IncomeSources {...screenProps} />;
-    case 'mistake':
-      return <Mistake {...screenProps} />;
-    case 'annual-income':
-      return <AnnualIncome {...screenProps} />;
-    case 'business-nature':
-      return <BusinessNature {...screenProps} />;
-    case 'self-employed-expenses':
-      return <SelfEmployedExpenses {...screenProps} />;
-    case 'landlord-expenses':
-      return <LandlordExpenses {...screenProps} />;
-    case 'personal-details':
-      return <PersonalDetails {...screenProps} />;
-    case 'get-help':
-      return <GetHelp {...screenProps} />;
-    case 'sign-up':
-      return <SignUp {...screenProps} />;
-    case 'analyzing':
-      return <Analyzing {...screenProps} />;
-    case 'results':
-      return <Results {...screenProps} />;
-    case 'claim-back':
-      return <ClaimBack {...screenProps} />;
+  function renderScreen() {
+    switch (state.step as Step) {
+      case 'income-sources':
+        return <IncomeSources {...screenProps} />;
+      case 'mistake':
+        return <Mistake {...screenProps} />;
+      case 'annual-income':
+        return <AnnualIncome {...screenProps} />;
+      case 'business-nature':
+        return <BusinessNature {...screenProps} />;
+      case 'self-employed-expenses':
+        return <SelfEmployedExpenses {...screenProps} />;
+      case 'landlord-expenses':
+        return <LandlordExpenses {...screenProps} />;
+      case 'personal-details':
+        return <PersonalDetails {...screenProps} />;
+      case 'get-help':
+        return <GetHelp {...screenProps} />;
+      case 'sign-up':
+        return <SignUp {...screenProps} />;
+      case 'analyzing':
+        return <Analyzing {...screenProps} />;
+      case 'results':
+        return <Results {...screenProps} />;
+      case 'claim-back':
+        return <ClaimBack {...screenProps} />;
+    }
   }
+
+  return (
+    <>
+      <Analytics />
+      {renderScreen()}
+    </>
+  );
 }
