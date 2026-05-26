@@ -591,6 +591,8 @@ button {
   display: flex;
   align-items: center;
   justify-content: center;
+  background: #ffffff;
+  border-radius: 50%;
   color: #0c0b0a;
 }
 
