@@ -9,7 +9,7 @@ export function AnnualIncome({ state, update, goNext }: ScreenProps) {
           <header className="step__heading">
             <h1 className="ds-h1">What is your annual income?</h1>
             <p className="ds-subtitle">
-              Enter your total income for 6 Apr 2024 - 5 Apr 2025 before tax
+              Enter your total income for 6 Apr 2024 - 5 Apr 2025 before tax. Can be an estimate.
             </p>
           </header>
           <TextField
@@ -25,7 +25,6 @@ export function AnnualIncome({ state, update, goNext }: ScreenProps) {
             }
             containerStyle={{ width: 360 }}
           />
-          <p className="ds-subtitle" style={{ marginTop: -8 }}>Can be an estimate.</p>
           <Button
             onClick={goNext}
             disabled={!state.annualIncome.trim()}
