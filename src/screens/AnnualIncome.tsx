@@ -25,6 +25,7 @@ export function AnnualIncome({ state, update, goNext }: ScreenProps) {
             }
             containerStyle={{ width: 360 }}
           />
+          <p className="ds-subtitle" style={{ marginTop: -8 }}>Can be an estimate.</p>
           <Button
             onClick={goNext}
             disabled={!state.annualIncome.trim()}
