@@ -3,9 +3,9 @@ import type { AnalysisInput } from '../shared/analysis';
 import type { ScreenProps } from './types';
 
 const STATUSES = [
-  'Reading your return…',
-  'Identifying missed expenses…',
-  'Calculating potential refund…',
+  'Analysing your situation…',
+  'Identifying what you can claim…',
+  'Getting your personal expense list done…',
 ];
 
 const STEP_MS = 1800;
