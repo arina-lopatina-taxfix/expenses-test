@@ -638,27 +638,28 @@ button {
   margin: 0;
   line-height: 1.3;
   font-weight: 500;
+  transition:
+    font-size 0.55s cubic-bezier(0.4, 0, 0.2, 1),
+    color     0.55s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity   0.55s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .prefill__muted {
   font-size: 16px;
   color: rgba(12, 11, 10, 0.4);
+  opacity: 0.55;
 }
 
 .prefill__active {
   font-size: 28px;
   color: var(--ds-text-title);
-  animation: prefill-pulse 1.4s ease-in-out infinite;
+  opacity: 1;
+  animation: prefill-pulse 2s ease-in-out infinite;
 }
 
 @keyframes prefill-pulse {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.55;
-  }
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.65; }
 }
 
 /* ---------- Claim back screen ---------- */
