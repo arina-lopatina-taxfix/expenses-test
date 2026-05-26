@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { Button } from '../ds';
 import type { ScreenProps } from './types';
 
 const QUESTIONS = [
@@ -44,7 +43,7 @@ const OPTIONS = [
   { value: 'not-sure' as const, label: 'Not sure', Icon: IconCircleQuestion },
 ];
 
-export function SelfEmployedExpenses({ state, update, goNext, goBack }: ScreenProps) {
+export function SelfEmployedExpenses({ state, update, goNext }: ScreenProps) {
   const [qIdx, setQIdx] = useState(0);
   const current = QUESTIONS[qIdx];
 
@@ -60,11 +59,6 @@ export function SelfEmployedExpenses({ state, update, goNext, goBack }: ScreenPr
     } else {
       goNext();
     }
-  };
-
-  const handleBack = () => {
-    if (qIdx > 0) setQIdx((i) => i - 1);
-    else goBack?.();
   };
 
   return (
@@ -93,16 +87,6 @@ export function SelfEmployedExpenses({ state, update, goNext, goBack }: ScreenPr
           </div>
         </div>
       </main>
-      <div className="footer">
-        <Button
-          variant="tertiary"
-          size="large"
-          onClick={handleBack}
-          startIcon={<span aria-hidden="true">←</span>}
-        >
-          Back
-        </Button>
-      </div>
     </div>
   );
 }
