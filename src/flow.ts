@@ -77,13 +77,11 @@ function computePath(state: FlowState): Step[] {
     return ['income-sources', 'personal-details', 'get-help'];
   }
   path.push('annual-income');
-  if (isSelfEmployed(state.incomes)) {
-    path.push('business-nature', 'self-employed-expenses');
-  }
-  if (isLandlord(state.incomes)) {
-    path.push('landlord-expenses');
-  }
-  path.push('personal-details', 'analyzing', 'sign-up', 'results', 'claim-back');
+  if (isSelfEmployed(state.incomes)) path.push('business-nature');
+  path.push('personal-details');
+  if (isSelfEmployed(state.incomes)) path.push('self-employed-expenses');
+  if (isLandlord(state.incomes)) path.push('landlord-expenses');
+  path.push('analyzing', 'sign-up', 'results', 'claim-back');
   return path;
 }
 
@@ -92,18 +90,18 @@ export function nextStep(state: FlowState): Step {
     case 'income-sources':
       return hasQualifying(state.incomes) ? 'annual-income' : 'personal-details';
     case 'annual-income':
-      if (isSelfEmployed(state.incomes)) return 'business-nature';
-      if (isLandlord(state.incomes)) return 'landlord-expenses';
-      return 'personal-details';
+      return isSelfEmployed(state.incomes) ? 'business-nature' : 'personal-details';
     case 'business-nature':
-      return 'self-employed-expenses';
-    case 'self-employed-expenses':
-      if (isLandlord(state.incomes)) return 'landlord-expenses';
-      return 'personal-details';
-    case 'landlord-expenses':
       return 'personal-details';
     case 'personal-details':
-      return hasQualifying(state.incomes) ? 'analyzing' : 'get-help';
+      if (!hasQualifying(state.incomes)) return 'get-help';
+      if (isSelfEmployed(state.incomes)) return 'self-employed-expenses';
+      if (isLandlord(state.incomes)) return 'landlord-expenses';
+      return 'analyzing';
+    case 'self-employed-expenses':
+      return isLandlord(state.incomes) ? 'landlord-expenses' : 'analyzing';
+    case 'landlord-expenses':
+      return 'analyzing';
     case 'analyzing':
       return 'sign-up';
     case 'sign-up':
