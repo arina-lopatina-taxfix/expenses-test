@@ -504,6 +504,84 @@ button {
   line-height: 1.5;
 }
 
+/* ---------- Expense question wizard (Figma 6506:1147) ---------- */
+.eq-screen {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+  padding: 32px 24px 40px;
+  width: 100%;
+}
+
+.eq-heading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+  max-width: 520px;
+}
+
+.eq-counter {
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(12, 11, 10, 0.4);
+  margin: 0;
+  letter-spacing: 0.02em;
+}
+
+.eq-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  max-width: 480px;
+}
+
+.eq-option {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 20px;
+  background: #F5F4F2;
+  border: none;
+  border-radius: 16px;
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+  font-family: var(--ds-font-body);
+  font-size: 17px;
+  font-weight: 500;
+  color: var(--ds-text-title);
+  transition: background 0.12s ease;
+}
+
+.eq-option:hover {
+  background: #ECEAE6;
+}
+
+.eq-option:active {
+  background: #E0DED9;
+}
+
+.eq-option__icon {
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  border-radius: 50%;
+  background: #0C0B0A;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.eq-option__label {
+  flex: 1;
+}
+
 /* Prefill / analysing screen (Figma 5688:19342) */
 .prefill {
   flex: 1;
