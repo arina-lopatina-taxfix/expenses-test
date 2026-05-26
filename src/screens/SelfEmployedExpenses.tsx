@@ -13,29 +13,35 @@ const QUESTIONS = [
   { id: 'subscriptions', text: 'Did you buy any subscriptions or memberships?' },
 ] as const;
 
-const YesIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-    <path d="M4 10.5l4.5 4.5 7.5-9" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
-  </svg>
-);
+/* Font Awesome 6 Solid circle icon paths */
+function IconCircleCheck() {
+  return (
+    <svg viewBox="0 0 512 512" fill="currentColor" width="24" height="24" aria-hidden="true">
+      <path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209L241 337c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L335 175c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z" />
+    </svg>
+  );
+}
 
-const NoIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-    <path d="M5.5 5.5l9 9M14.5 5.5l-9 9" stroke="white" strokeWidth="2.2" strokeLinecap="round" />
-  </svg>
-);
+function IconCircleXmark() {
+  return (
+    <svg viewBox="0 0 512 512" fill="currentColor" width="24" height="24" aria-hidden="true">
+      <path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM175 175c9.4-9.4 24.6-9.4 33.9 0l47 47 47-47c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9l-47 47 47 47c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0l-47-47-47 47c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9l47-47-47-47c-9.4-9.4-9.4-24.6 0-33.9z" />
+    </svg>
+  );
+}
 
-const MaybeIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-    <path d="M8 7.5C8 6.4 8.9 5.5 10 5.5s2 .9 2 2c0 1.5-2 2-2 3.5" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
-    <circle cx="10" cy="14.5" r="1" fill="white" />
-  </svg>
-);
+function IconCircleQuestion() {
+  return (
+    <svg viewBox="0 0 512 512" fill="currentColor" width="24" height="24" aria-hidden="true">
+      <path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM169.8 165.3c7.9-22.3 29.1-37.3 52.8-37.3h58.3c34.9 0 63.1 28.3 63.1 63.1c0 22.6-12.1 43.5-31.7 54.8L280 264.4c-.2 13-10.9 23.6-24 23.6c-13.3 0-24-10.7-24-24V250.5c0-8.6 4.6-16.5 12.1-20.8l44.3-25.4c4.7-2.7 7.6-7.7 7.6-13.1c0-8.4-6.8-15.1-15.1-15.1H222.6c-3.4 0-6.4 2.1-7.5 5.3l-.4 1.2c-4.4 12.5-18.2 19-30.6 14.6s-19-18.2-14.6-30.6l.4-1.2zM224 352a32 32 0 1 1 64 0 32 32 0 1 1 -64 0z" />
+    </svg>
+  );
+}
 
 const OPTIONS = [
-  { value: 'yes' as const,       label: 'Yes',      Icon: YesIcon },
-  { value: 'no' as const,        label: 'No',       Icon: NoIcon },
-  { value: 'not-sure' as const,  label: 'Not sure', Icon: MaybeIcon },
+  { value: 'yes' as const,      label: 'Yes',      Icon: IconCircleCheck },
+  { value: 'no' as const,       label: 'No',       Icon: IconCircleXmark },
+  { value: 'not-sure' as const, label: 'Not sure', Icon: IconCircleQuestion },
 ];
 
 export function SelfEmployedExpenses({ state, update, goNext, goBack }: ScreenProps) {
@@ -57,11 +63,8 @@ export function SelfEmployedExpenses({ state, update, goNext, goBack }: ScreenPr
   };
 
   const handleBack = () => {
-    if (qIdx > 0) {
-      setQIdx((i) => i - 1);
-    } else {
-      goBack?.();
-    }
+    if (qIdx > 0) setQIdx((i) => i - 1);
+    else goBack?.();
   };
 
   return (
@@ -69,9 +72,8 @@ export function SelfEmployedExpenses({ state, update, goNext, goBack }: ScreenPr
       <main className="step">
         <div className="eq-screen">
           <div className="eq-heading">
-            <p className="eq-counter">{qIdx + 1} / {QUESTIONS.length}</p>
-            <h1 className="ds-h1">{current.text}</h1>
-            <p className="ds-subtitle">
+            <p className="eq-title">{current.text}</p>
+            <p className="eq-subtitle">
               We will ask a few questions to understand what we can expense
             </p>
           </div>
@@ -82,7 +84,7 @@ export function SelfEmployedExpenses({ state, update, goNext, goBack }: ScreenPr
                 className="eq-option"
                 onClick={() => handleAnswer(value)}
               >
-                <span className="eq-option__icon">
+                <span className="eq-option__icon-wrap">
                   <Icon />
                 </span>
                 <span className="eq-option__label">{label}</span>
