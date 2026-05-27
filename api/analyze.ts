@@ -75,7 +75,7 @@ const RESPONSE_SCHEMA = {
     improvements: {
       type: 'array',
       description:
-        'Exactly one entry per selected expense category, in the same order they were listed. Each entry must use the exact categoryId, emoji and title supplied.',
+        'One entry per selected expense category the user is eligible for. Omit categories where the user is clearly ineligible (e.g. income too high, replaced benefit). Each entry must use the exact categoryId, emoji and title supplied.',
       items: {
         type: 'object',
         properties: {
@@ -160,8 +160,9 @@ Critical rules:
 - profile.name MUST be exactly "${input.firstName || 'You'}".
 - profile.role MUST reflect their income types: ${ctx.incomeLabels.join(', ') || 'none'}.
 - profile.chips must include the annual income (£${input.annualIncome || 'unspecified'})${ctx.personalDetailLabels ? `, life events (${ctx.personalDetailLabels})` : ''}${input.businessNature ? `, and a 1-2 word industry chip from "${input.businessNature}"` : ''}.
-- improvements MUST contain exactly one entry per selected expense category listed below — no more, no fewer.
-  For each entry use the exact categoryId, emoji and title supplied; do NOT alter them.
+- improvements MUST contain one entry per selected expense category the user is plausibly ELIGIBLE for.
+  If the user is clearly ineligible for a category given their income/situation (e.g. Working Tax Credit is replaced by Universal Credit for most earners; high earners are ineligible for certain credits), OMIT that category entirely — do NOT return a £0 entry for it.
+  For each included entry use the exact categoryId, emoji and title supplied; do NOT alter them.
   Write a real description, specific advice, and 3-5 deductible examples.
   Deductible amounts MUST be realistic for someone earning £${input.annualIncome || 'unknown'}/year with the business nature "${input.businessNature || 'general'}".
   Use specific pound figures a real accountant would quote (e.g. "~£1,200" not "~£45" for mortgage interest on a £25k income).
