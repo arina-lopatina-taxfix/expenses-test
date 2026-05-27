@@ -4,10 +4,26 @@ import type { ScreenProps } from './types';
 const QUESTIONS = [
   { id: 'mortgage',  text: 'Did you pay mortgage on your rental property?' },
   { id: 'repairs',   text: 'Did you do any repairs and maintenance works?' },
-  { id: 'insurance', text: 'Did you pay for property insurance?' },
-  { id: 'services',  text: 'Did you cover any bills for your tenants?' },
-  { id: 'travel',    text: 'Did you travel to your property?' },
-  { id: 'office',    text: 'Did you spend any money on stationery or any other related costs for managing your property?' },
+  {
+    id: 'insurance',
+    text: 'Did you pay for property insurance?',
+    subtext: 'Landlord insurance premiums covering your rental property such as buildings, contents, or rent guarantee insurance are typically deductible expenses.',
+  },
+  {
+    id: 'services',
+    text: 'Did you cover any bills for your tenants?',
+    subtext: 'If you pay for utilities, council tax, or broadband on behalf of your tenants, these costs can usually be claimed as a rental business expense.',
+  },
+  {
+    id: 'travel',
+    text: 'Did you travel to your property?',
+    subtext: 'Travel costs for visiting your rental property to carry out inspections, repairs, or maintenance may be deductible. This does not include personal trips unrelated to managing the property.',
+  },
+  {
+    id: 'office',
+    text: 'Did you spend any money on stationery or any other related costs for managing your property?',
+    subtext: 'Day-to-day costs such as printing, postage, phone calls, or admin expenses directly related to managing your rental property can usually be claimed.',
+  },
 ] as const;
 
 function IconCircleCheck() {
@@ -64,6 +80,7 @@ export function LandlordExpenses({ state, update, goNext }: ScreenProps) {
         <div className="eq-screen">
           <div className="eq-heading">
             <p className="eq-title">{current.text}</p>
+            {'subtext' in current && <p className="eq-subtitle">{current.subtext}</p>}
           </div>
           <div className="eq-options">
             {OPTIONS.map(({ value, label, Icon }) => (
