@@ -47,7 +47,7 @@ const RESPONSE_SCHEMA = {
     totalAdditionalSavings: {
       type: 'string',
       description:
-        'Formatted GBP amount such as "£6,034" representing the total plausible tax-deductible amount across all selected categories, scaled to the stated annual income.',
+        'Formatted GBP amount such as "£6,034" representing the maximum plausible tax-deductible amount across all selected categories, scaled to the stated annual income.',
     },
     profile: {
       type: 'object',

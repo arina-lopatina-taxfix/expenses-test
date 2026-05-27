@@ -41,7 +41,7 @@ export function Results({ state, goNext }: ScreenProps) {
     <div className="app-shell results">
       <header className="results__hero">
         <h1 className="results__title">
-          You could have claim back around{' '}
+          You could have claim back up to{' '}
           <span className="results__title-amount">
             {data.totalAdditionalSavings}
           </span>
