@@ -1,28 +1,42 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { ScreenProps } from './types';
 
 const QUESTIONS = [
-  { id: 'mortgage',  text: 'Did you pay mortgage on your rental property?' },
-  { id: 'repairs',   text: 'Did you do any repairs and maintenance works?' },
+  {
+    id: 'mortgage',
+    text: 'Did you pay mortgage on your rental property?',
+    subtext: 'The interest portion of your mortgage payments on a rental property may qualify for tax relief. Note that you can no longer deduct the full mortgage payment as an expense.',
+    successMessage: 'Great, that means you can expense your mortgage interest and reduce your tax bill.',
+  },
+  {
+    id: 'repairs',
+    text: 'Did you do any repairs and maintenance works?',
+    subtext: 'Costs for keeping your property in good condition such as fixing a boiler, repainting walls, or repairing a roof can generally be claimed as allowable expenses.',
+    successMessage: 'Great, that means you can expense your repair and maintenance costs.',
+  },
   {
     id: 'insurance',
     text: 'Did you pay for property insurance?',
     subtext: 'Landlord insurance premiums covering your rental property such as buildings, contents, or rent guarantee insurance are typically deductible expenses.',
+    successMessage: 'Great, that means you can expense your property insurance premiums.',
   },
   {
     id: 'services',
     text: 'Did you cover any bills for your tenants?',
     subtext: 'If you pay for utilities, council tax, or broadband on behalf of your tenants, these costs can usually be claimed as a rental business expense.',
+    successMessage: 'Great, that means you can expense the bills you covered for your tenants.',
   },
   {
     id: 'travel',
     text: 'Did you travel to your property?',
     subtext: 'Travel costs for visiting your rental property to carry out inspections, repairs, or maintenance may be deductible. This does not include personal trips unrelated to managing the property.',
+    successMessage: 'Great, that means you can expense your travel costs to and from your rental property.',
   },
   {
     id: 'office',
     text: 'Did you spend any money on stationery or any other related costs for managing your property?',
     subtext: 'Day-to-day costs such as printing, postage, phone calls, or admin expenses directly related to managing your rental property can usually be claimed.',
+    successMessage: 'Great, that means you can expense your stationery and property management costs.',
   },
 ] as const;
 
@@ -58,15 +72,11 @@ const OPTIONS = [
 
 export function LandlordExpenses({ state, update, goNext }: ScreenProps) {
   const [qIdx, setQIdx] = useState(0);
+  const [showSuccess, setShowSuccess] = useState(false);
   const current = QUESTIONS[qIdx];
 
-  const handleAnswer = (answer: 'yes' | 'no' | 'not-sure') => {
-    const selected = answer !== 'no';
-    const updated = selected
-      ? [...new Set([...state.landlordExpenses, current.id])]
-      : state.landlordExpenses.filter((x) => x !== current.id);
-    update({ landlordExpenses: updated });
-
+  const goToNextQuestion = () => {
+    setShowSuccess(false);
     if (qIdx < QUESTIONS.length - 1) {
       setQIdx((i) => i + 1);
     } else {
@@ -74,20 +84,43 @@ export function LandlordExpenses({ state, update, goNext }: ScreenProps) {
     }
   };
 
+  const handleAnswer = (answer: 'yes' | 'no' | 'not-sure') => {
+    if (showSuccess) return;
+    const selected = answer !== 'no';
+    const updated = selected
+      ? [...new Set([...state.landlordExpenses, current.id])]
+      : state.landlordExpenses.filter((x) => x !== current.id);
+    update({ landlordExpenses: updated });
+
+    if (answer === 'yes') {
+      setShowSuccess(true);
+    } else {
+      goToNextQuestion();
+    }
+  };
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    if (!showSuccess) return;
+    const t = setTimeout(goToNextQuestion, 5000);
+    return () => clearTimeout(t);
+  }, [showSuccess]);
+
   return (
     <div className="app-shell">
       <main className="step">
         <div className="eq-screen">
           <div className="eq-heading">
             <p className="eq-title">{current.text}</p>
-            {'subtext' in current && <p className="eq-subtitle">{current.subtext}</p>}
+            <p className="eq-subtitle">{current.subtext}</p>
           </div>
           <div className="eq-options">
             {OPTIONS.map(({ value, label, Icon }) => (
               <button
                 key={value}
-                className="eq-option"
+                className={`eq-option${showSuccess && value === 'yes' ? ' eq-option--selected' : ''}`}
                 onClick={() => handleAnswer(value)}
+                disabled={showSuccess}
               >
                 <span className="eq-option__icon-wrap">
                   <Icon />
@@ -95,6 +128,14 @@ export function LandlordExpenses({ state, update, goNext }: ScreenProps) {
                 <span className="eq-option__label">{label}</span>
               </button>
             ))}
+            {showSuccess && (
+              <div className="eq-success">
+                <span className="eq-success__icon" aria-hidden="true">
+                  <IconCircleCheck />
+                </span>
+                <span className="eq-success__text">{current.successMessage}</span>
+              </div>
+            )}
           </div>
         </div>
       </main>

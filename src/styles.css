@@ -580,6 +580,16 @@ button {
   background: #e8e5e0;
 }
 
+.eq-option--selected,
+.eq-option--selected:hover,
+.eq-option--selected:active {
+  background: #eaf5e9;
+}
+
+.eq-option:disabled {
+  cursor: default;
+}
+
 /* 49×49 container matching Figma's icon area */
 .eq-option__icon-wrap {
   width: 49px;
@@ -591,6 +601,35 @@ button {
   background: #ffffff;
   border-radius: 50%;
   color: #0c0b0a;
+}
+
+.eq-success {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #eaf5e9;
+  border-radius: 16px;
+  padding: 14px 20px;
+  width: 100%;
+  box-sizing: border-box;
+  animation: eq-success-in 0.25s ease;
+}
+
+.eq-success__icon {
+  color: #36893b;
+  flex-shrink: 0;
+  display: flex;
+}
+
+.eq-success__text {
+  font-size: 14px;
+  line-height: 1.4;
+  color: #2d6a2e;
+}
+
+@keyframes eq-success-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 .eq-option__label {
