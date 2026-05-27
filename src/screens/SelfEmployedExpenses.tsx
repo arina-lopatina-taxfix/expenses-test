@@ -84,11 +84,13 @@ const OPTIONS = [
 
 export function SelfEmployedExpenses({ state, update, goNext }: ScreenProps) {
   const [qIdx, setQIdx] = useState(0);
-  const [showSuccess, setShowSuccess] = useState(false);
+  const [selectedValue, setSelectedValue] = useState<'yes' | 'no' | 'not-sure' | null>(null);
   const current = QUESTIONS[qIdx];
 
+  const showSuccess = selectedValue === 'yes';
+
   const goToNextQuestion = () => {
-    setShowSuccess(false);
+    setSelectedValue(null);
     if (qIdx < QUESTIONS.length - 1) {
       setQIdx((i) => i + 1);
     } else {
@@ -97,26 +99,21 @@ export function SelfEmployedExpenses({ state, update, goNext }: ScreenProps) {
   };
 
   const handleAnswer = (answer: 'yes' | 'no' | 'not-sure') => {
-    if (showSuccess) return;
+    if (selectedValue !== null) return;
     const selected = answer !== 'no';
     const updated = selected
       ? [...new Set([...state.selfEmployedExpenses, current.id])]
       : state.selfEmployedExpenses.filter((x) => x !== current.id);
     update({ selfEmployedExpenses: updated });
-
-    if (answer === 'yes') {
-      setShowSuccess(true);
-    } else {
-      goToNextQuestion();
-    }
+    setSelectedValue(answer);
   };
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
-    if (!showSuccess) return;
-    const t = setTimeout(goToNextQuestion, 2500);
+    if (selectedValue === null) return;
+    const t = setTimeout(goToNextQuestion, selectedValue === 'yes' ? 2500 : 300);
     return () => clearTimeout(t);
-  }, [showSuccess]);
+  }, [selectedValue]);
 
   return (
     <div className="app-shell">
@@ -130,9 +127,9 @@ export function SelfEmployedExpenses({ state, update, goNext }: ScreenProps) {
             {OPTIONS.map(({ value, label, Icon }) => (
               <button
                 key={value}
-                className={`eq-option${showSuccess && value === 'yes' ? ' eq-option--selected' : ''}`}
+                className={`eq-option${selectedValue === value ? ' eq-option--selected' : ''}`}
                 onClick={() => handleAnswer(value)}
-                disabled={showSuccess}
+                disabled={selectedValue !== null}
               >
                 <span className="eq-option__icon-wrap">
                   <Icon />
