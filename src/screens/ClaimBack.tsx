@@ -32,7 +32,7 @@ export function ClaimBack(_: ScreenProps) {
           </Button>
           <Button
             as="a"
-            href="https://calendly.com/nik-sheth-taxfix/30min"
+            href="https://calendly.com/d/ct6g-r9b-yvk/taxfix-call-me-request"
             target="_blank"
             rel="noopener noreferrer"
             variant="tertiary"
