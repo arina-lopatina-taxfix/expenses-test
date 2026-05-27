@@ -50,8 +50,7 @@ export function Results({ state, goNext }: ScreenProps) {
           We compared your tax situation with others from people in a similar
           income bracket and the same type of income. Here&apos;s what&apos;s on your
           return — and what you might be missing. All numbers shown are
-          illustrative only. You can also upload your tax return to get a more
-          precise answer.
+          illustrative only.
         </p>
         {cache?.status === 'error' && (
           <p className="results__warning">

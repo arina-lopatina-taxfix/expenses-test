@@ -160,7 +160,9 @@ Critical rules:
 - profile.chips must include the annual income (£${input.annualIncome || 'unspecified'})${ctx.personalDetailLabels ? `, life events (${ctx.personalDetailLabels})` : ''}${input.businessNature ? `, and a 1-2 word industry chip from "${input.businessNature}"` : ''}.
 - improvements MUST contain exactly one entry per selected expense category listed below — no more, no fewer.
   For each entry use the exact categoryId, emoji and title supplied; do NOT alter them.
-  Write a real description, specific advice, and 3-5 realistic deductible examples scaled to £${input.annualIncome || 'unknown'} annual income.
+  Write a real description, specific advice, and 3-5 deductible examples.
+  Deductible amounts MUST be realistic for someone earning £${input.annualIncome || 'unknown'}/year with the business nature "${input.businessNature || 'general'}".
+  Use specific pound figures a real accountant would quote (e.g. "~£1,200" not "~£45" for mortgage interest on a £25k income).
   NEVER write "Lorem ipsum" or placeholder text.
 
 Selected expense categories (${ctx.selectedCategories.length}):
