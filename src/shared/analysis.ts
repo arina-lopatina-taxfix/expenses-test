@@ -22,13 +22,8 @@ export type DeductibleLine = {
   amount: string;
 };
 
-export type AlreadyExpensingItem = {
-  emoji: string;
-  title: string;
-  advice: string;
-};
-
 export type ImprovementItem = {
+  categoryId: string;
   emoji: string;
   title: string;
   description: string;
@@ -43,7 +38,6 @@ export type AnalysisResponse = {
     role: string;
     chips: string[];
   };
-  alreadyExpensing: AlreadyExpensingItem[];
   improvements: ImprovementItem[];
 };
 

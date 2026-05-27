@@ -4,13 +4,9 @@ import type {
 } from '../src/shared/analysis';
 import {
   INCOME_SOURCE_LABELS,
-  INCOME_TYPE_CATEGORIES,
   LANDLORD_CATEGORIES,
-  PERSONAL_DETAIL_CATEGORIES,
   PERSONAL_DETAIL_LABELS,
   SELF_EMPLOYED_CATEGORIES,
-  resolveLandlordCategory,
-  resolveSelfEmployedCategory,
 } from '../src/shared/categories';
 
 export const config = { runtime: 'edge' };
@@ -51,7 +47,7 @@ const RESPONSE_SCHEMA = {
     totalAdditionalSavings: {
       type: 'string',
       description:
-        'Formatted GBP amount such as "£6,034" representing the additional tax-deductible amount the user could plausibly claim, scaled to their stated annual income.',
+        'Formatted GBP amount such as "£6,034" representing the total plausible tax-deductible amount across all selected categories, scaled to the stated annual income.',
     },
     profile: {
       type: 'object',
@@ -59,7 +55,7 @@ const RESPONSE_SCHEMA = {
         name: {
           type: 'string',
           description:
-            'The user-provided first name (use it verbatim). Fall back to "You" only if it is empty.',
+            'The user-provided first name (verbatim). Fall back to "You" only if empty.',
         },
         role: {
           type: 'string',
@@ -70,46 +66,37 @@ const RESPONSE_SCHEMA = {
           type: 'array',
           items: { type: 'string' },
           description:
-            '2-5 short tags summarising the user. Always include the annual income (e.g. "£45,000"), the business nature if provided, and any personal details that affect tax (Married, Dependants, Student loan, Homeowner, Renter).',
+            '2-5 short tags summarising the user. Always include the annual income (e.g. "£45,000"), business nature if provided, and any personal details that affect tax (Married, Dependants, Student loan, Homeowner, Renter).',
         },
       },
       required: ['name', 'role', 'chips'],
     },
-    alreadyExpensing: {
-      type: 'array',
-      description:
-        'One entry per category the user ticked on the expenses screen. Use the exact emoji and title supplied for that category. Do NOT include any amount or numbers - only emoji, title and a short, specific piece of advice tailored to the user.',
-      items: {
-        type: 'object',
-        properties: {
-          emoji: { type: 'string' },
-          title: { type: 'string' },
-          advice: {
-            type: 'string',
-            description:
-              'One or two sentences of concrete UK self-assessment advice for this category given the user\'s situation (income level, business nature, life events). Never write "Lorem ipsum" or filler text.',
-          },
-        },
-        required: ['emoji', 'title', 'advice'],
-      },
-    },
     improvements: {
       type: 'array',
       description:
-        'All categories and reliefs the user has not yet claimed but plausibly could, covering: unticked expense categories, deductions relevant to their income types, and credits/reliefs from their personal situation. Each must have a real, specific advice paragraph and 3-5 example deductibles with realistic GBP amounts.',
+        'Exactly one entry per selected expense category, in the same order they were listed. Each entry must use the exact categoryId, emoji and title supplied.',
       items: {
         type: 'object',
         properties: {
+          categoryId: {
+            type: 'string',
+            description: 'The exact id string supplied for this category.',
+          },
           emoji: { type: 'string' },
           title: { type: 'string' },
-          description: { type: 'string' },
+          description: {
+            type: 'string',
+            description:
+              '1-2 sentences describing what this expense category covers for UK self-assessment.',
+          },
           advice: {
             type: 'string',
             description:
-              'One or two sentences of concrete UK self-assessment advice. Never "Lorem ipsum" or filler.',
+              'Specific, actionable UK self-assessment advice tailored to this user\'s income level, business nature, and personal situation. Never write "Lorem ipsum" or filler.',
           },
           deductibles: {
             type: 'array',
+            description: '3-5 example items claimable in this category with realistic GBP amounts.',
             items: {
               type: 'object',
               properties: {
@@ -123,99 +110,66 @@ const RESPONSE_SCHEMA = {
             },
           },
         },
-        required: ['emoji', 'title', 'description', 'advice', 'deductibles'],
+        required: ['categoryId', 'emoji', 'title', 'description', 'advice', 'deductibles'],
       },
     },
   },
-  required: [
-    'totalAdditionalSavings',
-    'profile',
-    'alreadyExpensing',
-    'improvements',
-  ],
+  required: ['totalAdditionalSavings', 'profile', 'improvements'],
 };
 
 function resolveContext(input: AnalysisInput) {
-  const incomeLabels = input.incomes.map(
-    (id) => INCOME_SOURCE_LABELS[id] ?? id,
-  );
-
+  const incomeLabels = input.incomes.map((id) => INCOME_SOURCE_LABELS[id] ?? id);
   const isSelfEmployed = input.incomes.includes('self-employment');
   const isLandlord = input.incomes.includes('rental');
 
-  const expensesAlreadyTicked = [
+  const selectedCategories = [
     ...(isSelfEmployed
-      ? input.selfEmployedExpenses.map(resolveSelfEmployedCategory)
+      ? input.selfEmployedExpenses
+          .map((id) => SELF_EMPLOYED_CATEGORIES.find((c) => c.id === id))
+          .filter((c): c is NonNullable<typeof c> => Boolean(c))
       : []),
     ...(isLandlord
-      ? input.landlordExpenses.map(resolveLandlordCategory)
+      ? input.landlordExpenses
+          .map((id) => LANDLORD_CATEGORIES.find((c) => c.id === id))
+          .filter((c): c is NonNullable<typeof c> => Boolean(c))
       : []),
-  ].filter((c): c is NonNullable<typeof c> => Boolean(c));
-
-  // Unticked expense categories from the expense screens
-  const expensesNotTicked = (
-    isSelfEmployed
-      ? SELF_EMPLOYED_CATEGORIES.filter(
-          (c) => !input.selfEmployedExpenses.includes(c.id),
-        )
-      : []
-  ).concat(
-    isLandlord
-      ? LANDLORD_CATEGORIES.filter(
-          (c) => !input.landlordExpenses.includes(c.id),
-        )
-      : [],
-  );
-
-  // Deduction categories for non-self-employed / non-landlord income sources
-  const incomeTypeSuggestions = input.incomes
-    .filter((src) => src !== 'self-employment' && src !== 'rental')
-    .flatMap((src) => INCOME_TYPE_CATEGORIES[src] ?? []);
-
-  // Credits and reliefs based on personal-detail selections
-  const personalDetailSuggestions = input.personalDetails
-    .flatMap((id) => PERSONAL_DETAIL_CATEGORIES[id] ?? []);
+  ];
 
   const personalDetailLabels = input.personalDetails
     .map((id) => PERSONAL_DETAIL_LABELS[id] ?? id)
     .join(', ');
 
-  return {
-    isSelfEmployed,
-    isLandlord,
-    incomeLabels,
-    expensesAlreadyTicked,
-    expensesNotTicked,
-    incomeTypeSuggestions,
-    personalDetailSuggestions,
-    personalDetailLabels,
-  };
+  return { isSelfEmployed, isLandlord, incomeLabels, selectedCategories, personalDetailLabels };
 }
 
 function buildPrompt(input: AnalysisInput): string {
   const ctx = resolveContext(input);
 
+  const categoryList = ctx.selectedCategories
+    .map((c) => `  - categoryId: "${c.id}", emoji: ${c.emoji}, title: "${c.title}"`)
+    .join('\n');
+
   return `You are a UK self-assessment tax expert assisting Taxfix.
 
 The user has just completed a short questionnaire. Produce a personalised
-expense analysis for the 2024/25 UK tax year that reflects ONLY the answers
-below.
+expense analysis for the 2024/25 UK tax year.
 
 Critical rules:
 - profile.name MUST be exactly "${input.firstName || 'You'}".
-- profile.role MUST reflect the income types they selected: ${ctx.incomeLabels.join(', ') || 'none'}.
-- profile.chips should include the income (£${input.annualIncome || 'unspecified'}) and any of these life events that apply: ${ctx.personalDetailLabels || 'none'}. If they entered a business nature ("${input.businessNature || ''}"), include a 1-2 word industry chip from it.
-- alreadyExpensing MUST contain exactly one entry per category the user ticked. There are ${ctx.expensesAlreadyTicked.length} such categories: ${ctx.expensesAlreadyTicked.map((c) => `${c.emoji} ${c.title}`).join(', ') || 'none'}. Use the supplied emoji and title verbatim. Do NOT invent extra entries. Do NOT include any amount or numbers in this section.
-- improvements should cover ALL categories the user could plausibly benefit from but has not yet claimed. Draw from ALL THREE of these lists and include every relevant item:
-  1. Unticked expense categories: ${ctx.expensesNotTicked.map((c) => `${c.emoji} ${c.title}`).join(', ') || '(none)'}
-  2. Deductions for their other income types (${input.incomes.filter((s) => s !== 'self-employment' && s !== 'rental').join(', ') || 'none'}): ${ctx.incomeTypeSuggestions.map((c) => `${c.emoji} ${c.title}`).join(', ') || '(none)'}
-  3. Credits & reliefs from their personal situation (${ctx.personalDetailLabels || 'none'}): ${ctx.personalDetailSuggestions.map((c) => `${c.emoji} ${c.title}`).join(', ') || '(none)'}
-  Use the supplied emoji and title verbatim. Include all that are genuinely relevant; do not cap at 4 if more are applicable.
-- Every "advice" string must be specific, helpful, and grounded in the user's circumstances. NEVER write "Lorem ipsum", placeholders, or generic filler.
-- All monetary amounts must be plausible relative to their stated annual income of £${input.annualIncome || 'unknown'}.
+- profile.role MUST reflect their income types: ${ctx.incomeLabels.join(', ') || 'none'}.
+- profile.chips must include the annual income (£${input.annualIncome || 'unspecified'})${ctx.personalDetailLabels ? `, life events (${ctx.personalDetailLabels})` : ''}${input.businessNature ? `, and a 1-2 word industry chip from "${input.businessNature}"` : ''}.
+- improvements MUST contain exactly one entry per selected expense category listed below — no more, no fewer.
+  For each entry use the exact categoryId, emoji and title supplied; do NOT alter them.
+  Write a real description, specific advice, and 3-5 realistic deductible examples scaled to £${input.annualIncome || 'unknown'} annual income.
+  NEVER write "Lorem ipsum" or placeholder text.
 
-Raw answers JSON:
-${JSON.stringify(input, null, 2)}
+Selected expense categories (${ctx.selectedCategories.length}):
+${categoryList || '  (none selected)'}
+
+User context:
+- Annual income: £${input.annualIncome || 'unspecified'}
+- Business nature: ${input.businessNature || 'n/a'}
+- Personal details: ${ctx.personalDetailLabels || 'none'}
 
 Return JSON only, exactly matching the supplied schema.`;
 }
@@ -237,18 +191,17 @@ const FALLBACK = (input: AnalysisInput): AnalysisResponse => {
       chips: [
         input.annualIncome ? `£${input.annualIncome}` : '',
         input.businessNature?.slice(0, 24) ?? '',
-        ...input.personalDetails.map(
-          (id) => PERSONAL_DETAIL_LABELS[id] ?? id,
-        ),
+        ...input.personalDetails.map((id) => PERSONAL_DETAIL_LABELS[id] ?? id),
       ].filter(Boolean),
     },
-    alreadyExpensing: ctx.expensesAlreadyTicked.map((c) => ({
+    improvements: ctx.selectedCategories.map((c) => ({
+      categoryId: c.id,
       emoji: c.emoji,
       title: c.title,
-      advice:
-        'We could not reach the AI advisor — try refreshing for personalised guidance.',
+      description: '',
+      advice: 'We could not reach the AI advisor — try refreshing for personalised guidance.',
+      deductibles: [],
     })),
-    improvements: [],
   };
 };
 

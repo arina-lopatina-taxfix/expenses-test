@@ -1,43 +1,6 @@
 import { Button, Card, Chip } from '../ds';
-import type { AnalysisResponse, ImprovementItem } from '../shared/analysis';
+import type { AnalysisResponse } from '../shared/analysis';
 import type { ScreenProps } from './types';
-
-type CategoryMeta = { label: string; emoji: string; keywords: string[] };
-
-const SE_CATEGORIES: Record<string, CategoryMeta> = {
-  home:          { label: 'Home Office',            emoji: '🏠', keywords: ['home'] },
-  tech:          { label: 'Tech & Equipment',        emoji: '💻', keywords: ['tech', 'equipment', 'computer', 'device'] },
-  travel:        { label: 'Business Travel',         emoji: '🚗', keywords: ['travel', 'mileage', 'transport'] },
-  materials:     { label: 'Materials & Supplies',    emoji: '📦', keywords: ['material', 'goods', 'stock', 'suppl'] },
-  insurance:     { label: 'Business Insurance',      emoji: '🛡️', keywords: ['insurance'] },
-  training:      { label: 'Training & Education',    emoji: '📚', keywords: ['training', 'course', 'education', 'development'] },
-  staff:         { label: 'Staff & Contractors',     emoji: '👥', keywords: ['staff', 'employee', 'contractor', 'subcontract'] },
-  subscriptions: { label: 'Subscriptions & Software', emoji: '📱', keywords: ['subscript', 'membership', 'software', 'app'] },
-};
-
-const LL_CATEGORIES: Record<string, CategoryMeta> = {
-  mortgage:  { label: 'Mortgage Interest',      emoji: '🏦', keywords: ['mortgage'] },
-  repairs:   { label: 'Repairs & Maintenance',  emoji: '🔧', keywords: ['repair', 'maintenance'] },
-  insurance: { label: 'Property Insurance',     emoji: '🛡️', keywords: ['insurance'] },
-  services:  { label: 'Tenant Bills & Services', emoji: '💡', keywords: ['bill', 'service', 'utilit', 'tenant'] },
-  travel:    { label: 'Property Travel',        emoji: '🚗', keywords: ['travel', 'mileage', 'transport'] },
-  office:    { label: 'Admin & Stationery',     emoji: '📝', keywords: ['admin', 'stationery', 'office'] },
-};
-
-function findImprovement(
-  meta: CategoryMeta,
-  improvements: ImprovementItem[],
-  used: Set<number>,
-): ImprovementItem | undefined {
-  const idx = improvements.findIndex(
-    (imp, i) =>
-      !used.has(i) &&
-      meta.keywords.some((k) => imp.title.toLowerCase().includes(k)),
-  );
-  if (idx === -1) return undefined;
-  used.add(idx);
-  return improvements[idx];
-}
 
 export function Results({ state, goBack, goNext }: ScreenProps) {
   const cache = state.analysisCache;
@@ -63,21 +26,15 @@ export function Results({ state, goBack, goNext }: ScreenProps) {
     );
   }
 
-  // Build the list of categories the user selected Yes/Not sure on
-  const usedImprovements = new Set<number>();
+  // Map improvements by categoryId for direct lookup
+  const improvementById = new Map(data.improvements.map((imp) => [imp.categoryId, imp]));
+
   const selectedCategories = [
-    ...state.selfEmployedExpenses.map((id) => ({
-      id,
-      meta: SE_CATEGORIES[id] ?? { label: id, emoji: '📋', keywords: [] },
-    })),
-    ...state.landlordExpenses.map((id) => ({
-      id,
-      meta: LL_CATEGORIES[id] ?? { label: id, emoji: '📋', keywords: [] },
-    })),
-  ].map(({ id, meta }) => ({
+    ...state.selfEmployedExpenses,
+    ...state.landlordExpenses,
+  ].map((id) => ({
     id,
-    meta,
-    improvement: findImprovement(meta, data.improvements, usedImprovements),
+    improvement: improvementById.get(id),
   }));
 
   return (
@@ -132,15 +89,17 @@ export function Results({ state, goBack, goNext }: ScreenProps) {
                 </Chip>
               </div>
               <div className="results__items">
-                {selectedCategories.map(({ id, meta, improvement }) =>
+                {selectedCategories.map(({ id, improvement }) =>
                   improvement ? (
                     <Card key={id} className="results__item">
                       <div className="results__item-main">
                         <p className="results__item-title">
-                          <span aria-hidden="true">{meta.emoji}</span>{' '}
-                          {meta.label}
+                          <span aria-hidden="true">{improvement.emoji}</span>{' '}
+                          {improvement.title}
                         </p>
-                        <p className="results__item-desc">{improvement.description}</p>
+                        {improvement.description && (
+                          <p className="results__item-desc">{improvement.description}</p>
+                        )}
                         <div className="results__alert">
                           <span className="results__alert-title">
                             <span aria-hidden="true">⚡</span> Advice
@@ -148,29 +107,24 @@ export function Results({ state, goBack, goNext }: ScreenProps) {
                           <span className="results__alert-body">{improvement.advice}</span>
                         </div>
                       </div>
-                      <div className="results__divider" />
-                      <div className="results__deductible">
-                        <span className="results__deductible-title">
-                          <span aria-hidden="true">❓</span> What you can deduct?
-                        </span>
-                        {improvement.deductibles.map((d, j) => (
-                          <div className="results__deductible-row" key={j}>
-                            <span>{d.label}</span>
-                            <Chip variant="ghost">{d.amount}</Chip>
+                      {improvement.deductibles.length > 0 && (
+                        <>
+                          <div className="results__divider" />
+                          <div className="results__deductible">
+                            <span className="results__deductible-title">
+                              <span aria-hidden="true">❓</span> What you can deduct?
+                            </span>
+                            {improvement.deductibles.map((d, j) => (
+                              <div className="results__deductible-row" key={j}>
+                                <span>{d.label}</span>
+                                <Chip variant="ghost">{d.amount}</Chip>
+                              </div>
+                            ))}
                           </div>
-                        ))}
-                      </div>
+                        </>
+                      )}
                     </Card>
-                  ) : (
-                    <Card key={id} className="results__item results__item--simple">
-                      <div className="results__item-main">
-                        <p className="results__item-title">
-                          <span aria-hidden="true">{meta.emoji}</span>{' '}
-                          {meta.label}
-                        </p>
-                      </div>
-                    </Card>
-                  ),
+                  ) : null,
                 )}
               </div>
             </div>
