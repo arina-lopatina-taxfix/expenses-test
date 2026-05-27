@@ -64,9 +64,6 @@ export function LandlordExpenses({ state, update, goNext }: ScreenProps) {
         <div className="eq-screen">
           <div className="eq-heading">
             <p className="eq-title">{current.text}</p>
-            <p className="eq-subtitle">
-              We will ask a few questions to understand what we can expense
-            </p>
           </div>
           <div className="eq-options">
             {OPTIONS.map(({ value, label, Icon }) => (
