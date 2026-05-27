@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { ScreenProps } from './types';
 
 const QUESTIONS = [
@@ -6,45 +6,52 @@ const QUESTIONS = [
     id: 'home',
     text: 'Did you work from home?',
     subtext: 'You may be able to claim a portion of your household bills such as heating, electricity, and broadband as a business expense.',
+    successMessage: 'Great, that means you can expense a portion of your household bills.',
   },
   {
     id: 'tech',
     text: 'Did you buy any tech or equipment?',
     subtext: 'Laptops, phones, cameras, or tools purchased for work may qualify for tax relief under capital allowances or as allowable expenses.',
+    successMessage: 'Great, that means you can expense the tech and equipment you bought for work.',
   },
   {
     id: 'travel',
     text: 'Did you travel for business?',
     subtext: 'Costs like fuel, train tickets, parking, or flights for work-related trips (excluding your regular commute) may be deductible.',
+    successMessage: 'Great, that means you can expense your business travel costs.',
   },
   {
     id: 'materials',
     text: 'Did you spend any money on materials to make your goods?',
     subtext: 'If you buy raw materials, packaging, or supplies to produce what you sell, these costs can usually be claimed as a business expense.',
+    successMessage: 'Great, that means you can expense the materials you bought to make your goods.',
   },
   {
     id: 'insurance',
     text: 'Did you buy insurance for your business?',
     subtext: 'Business insurance premiums such as public liability, professional indemnity, or contents insurance are typically allowable expenses.',
+    successMessage: 'Great, that means you can expense your business insurance premiums.',
   },
   {
     id: 'training',
     text: 'Did you do any professional training or courses?',
     subtext: 'Training that improves skills you use in your current work may be tax-deductible. This includes online courses, workshops, and industry certifications.',
+    successMessage: 'Great, that means you can expense the cost of your training and courses.',
   },
   {
     id: 'staff',
     text: 'Did you have any people hired?',
     subtext: 'Wages, salaries, subcontractor fees, and employer National Insurance contributions paid to staff or freelancers can be claimed as business expenses.',
+    successMessage: 'Great, that means you can expense the wages and fees you paid to your staff or freelancers.',
   },
   {
     id: 'subscriptions',
     text: 'Did you buy any subscriptions or memberships?',
     subtext: 'Fees for professional bodies, trade associations, or work-related software subscriptions such as accounting tools or industry publications are usually deductible.',
+    successMessage: 'Great, that means you can expense your work-related subscriptions and memberships.',
   },
 ] as const;
 
-/* Font Awesome 6 Solid circle icon paths */
 function IconCircleCheck() {
   return (
     <svg viewBox="0 0 512 512" fill="currentColor" width="24" height="24" aria-hidden="true">
@@ -77,21 +84,39 @@ const OPTIONS = [
 
 export function SelfEmployedExpenses({ state, update, goNext }: ScreenProps) {
   const [qIdx, setQIdx] = useState(0);
+  const [showSuccess, setShowSuccess] = useState(false);
   const current = QUESTIONS[qIdx];
 
-  const handleAnswer = (answer: 'yes' | 'no' | 'not-sure') => {
-    const selected = answer !== 'no';
-    const updated = selected
-      ? [...new Set([...state.selfEmployedExpenses, current.id])]
-      : state.selfEmployedExpenses.filter((x) => x !== current.id);
-    update({ selfEmployedExpenses: updated });
-
+  const goToNextQuestion = () => {
+    setShowSuccess(false);
     if (qIdx < QUESTIONS.length - 1) {
       setQIdx((i) => i + 1);
     } else {
       goNext();
     }
   };
+
+  const handleAnswer = (answer: 'yes' | 'no' | 'not-sure') => {
+    if (showSuccess) return;
+    const selected = answer !== 'no';
+    const updated = selected
+      ? [...new Set([...state.selfEmployedExpenses, current.id])]
+      : state.selfEmployedExpenses.filter((x) => x !== current.id);
+    update({ selfEmployedExpenses: updated });
+
+    if (answer === 'yes') {
+      setShowSuccess(true);
+    } else {
+      goToNextQuestion();
+    }
+  };
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    if (!showSuccess) return;
+    const t = setTimeout(goToNextQuestion, 5000);
+    return () => clearTimeout(t);
+  }, [showSuccess]);
 
   return (
     <div className="app-shell">
@@ -105,8 +130,9 @@ export function SelfEmployedExpenses({ state, update, goNext }: ScreenProps) {
             {OPTIONS.map(({ value, label, Icon }) => (
               <button
                 key={value}
-                className="eq-option"
+                className={`eq-option${showSuccess && value === 'yes' ? ' eq-option--selected' : ''}`}
                 onClick={() => handleAnswer(value)}
+                disabled={showSuccess}
               >
                 <span className="eq-option__icon-wrap">
                   <Icon />
@@ -114,6 +140,14 @@ export function SelfEmployedExpenses({ state, update, goNext }: ScreenProps) {
                 <span className="eq-option__label">{label}</span>
               </button>
             ))}
+            {showSuccess && (
+              <div className="eq-success">
+                <span className="eq-success__icon" aria-hidden="true">
+                  <IconCircleCheck />
+                </span>
+                <span className="eq-success__text">{current.successMessage}</span>
+              </div>
+            )}
           </div>
         </div>
       </main>
