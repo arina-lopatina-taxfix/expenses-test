@@ -2,7 +2,7 @@ import { Button, Card, Chip } from '../ds';
 import type { AnalysisResponse } from '../shared/analysis';
 import type { ScreenProps } from './types';
 
-export function Results({ state, goBack, goNext }: ScreenProps) {
+export function Results({ state, goNext }: ScreenProps) {
   const cache = state.analysisCache;
 
   const data: AnalysisResponse | null =
@@ -132,18 +132,6 @@ export function Results({ state, goBack, goNext }: ScreenProps) {
         </div>
       </section>
 
-      {goBack && (
-        <div className="footer">
-          <Button
-            variant="tertiary"
-            size="large"
-            onClick={goBack}
-            startIcon={<span aria-hidden="true">←</span>}
-          >
-            Back
-          </Button>
-        </div>
-      )}
     </div>
   );
 }
