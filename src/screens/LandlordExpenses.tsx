@@ -102,14 +102,14 @@ export function LandlordExpenses({ state, update, goNext }: ScreenProps) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (!showSuccess) return;
-    const t = setTimeout(goToNextQuestion, 5000);
+    const t = setTimeout(goToNextQuestion, 2500);
     return () => clearTimeout(t);
   }, [showSuccess]);
 
   return (
     <div className="app-shell">
       <main className="step">
-        <div className="eq-screen">
+        <div key={qIdx} className="eq-screen">
           <div className="eq-heading">
             <p className="eq-title">{current.text}</p>
             <p className="eq-subtitle">{current.subtext}</p>
