@@ -1,5 +1,6 @@
 import { Button, Card, Chip } from '../ds';
 import type { AnalysisResponse } from '../shared/analysis';
+import { PERSONAL_DETAIL_CATEGORIES } from '../shared/categories';
 import type { ScreenProps } from './types';
 
 export function Results({ state, goNext }: ScreenProps) {
@@ -29,9 +30,14 @@ export function Results({ state, goNext }: ScreenProps) {
   // Map improvements by categoryId for direct lookup
   const improvementById = new Map(data.improvements.map((imp) => [imp.categoryId, imp]));
 
+  const personalDetailIds = state.personalDetails
+    .flatMap((id) => PERSONAL_DETAIL_CATEGORIES[id] ?? [])
+    .map((c) => c.id);
+
   const selectedCategories = [
     ...state.selfEmployedExpenses,
     ...state.landlordExpenses,
+    ...personalDetailIds,
   ].map((id) => ({
     id,
     improvement: improvementById.get(id),
@@ -41,7 +47,7 @@ export function Results({ state, goNext }: ScreenProps) {
     <div className="app-shell results">
       <header className="results__hero">
         <h1 className="results__title">
-          You could have claim back up to{' '}
+          You could claim back up to{' '}
           <span className="results__title-amount">
             {data.totalAdditionalSavings}
           </span>

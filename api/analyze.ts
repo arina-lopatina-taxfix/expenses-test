@@ -5,6 +5,7 @@ import type {
 import {
   INCOME_SOURCE_LABELS,
   LANDLORD_CATEGORIES,
+  PERSONAL_DETAIL_CATEGORIES,
   PERSONAL_DETAIL_LABELS,
   SELF_EMPLOYED_CATEGORIES,
 } from '../src/shared/categories';
@@ -133,6 +134,7 @@ function resolveContext(input: AnalysisInput) {
           .map((id) => LANDLORD_CATEGORIES.find((c) => c.id === id))
           .filter((c): c is NonNullable<typeof c> => Boolean(c))
       : []),
+    ...input.personalDetails.flatMap((id) => PERSONAL_DETAIL_CATEGORIES[id] ?? []),
   ];
 
   const personalDetailLabels = input.personalDetails
