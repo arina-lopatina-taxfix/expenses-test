@@ -2,14 +2,46 @@ import { useState } from 'react';
 import type { ScreenProps } from './types';
 
 const QUESTIONS = [
-  { id: 'home',          text: 'Did you work from home?' },
-  { id: 'tech',          text: 'Did you buy any tech or equipment?' },
-  { id: 'travel',        text: 'Did you travel for business?' },
-  { id: 'materials',     text: 'Did you spend any money on materials to make your goods?' },
-  { id: 'insurance',     text: 'Did you buy insurance for your business?' },
-  { id: 'training',      text: 'Did you do any professional training or courses?' },
-  { id: 'staff',         text: 'Did you have any people hired?' },
-  { id: 'subscriptions', text: 'Did you buy any subscriptions or memberships?' },
+  {
+    id: 'home',
+    text: 'Did you work from home?',
+    subtext: 'You may be able to claim a portion of your household bills such as heating, electricity, and broadband as a business expense.',
+  },
+  {
+    id: 'tech',
+    text: 'Did you buy any tech or equipment?',
+    subtext: 'Laptops, phones, cameras, or tools purchased for work may qualify for tax relief under capital allowances or as allowable expenses.',
+  },
+  {
+    id: 'travel',
+    text: 'Did you travel for business?',
+    subtext: 'Costs like fuel, train tickets, parking, or flights for work-related trips (excluding your regular commute) may be deductible.',
+  },
+  {
+    id: 'materials',
+    text: 'Did you spend any money on materials to make your goods?',
+    subtext: 'If you buy raw materials, packaging, or supplies to produce what you sell, these costs can usually be claimed as a business expense.',
+  },
+  {
+    id: 'insurance',
+    text: 'Did you buy insurance for your business?',
+    subtext: 'Business insurance premiums such as public liability, professional indemnity, or contents insurance are typically allowable expenses.',
+  },
+  {
+    id: 'training',
+    text: 'Did you do any professional training or courses?',
+    subtext: 'Training that improves skills you use in your current work may be tax-deductible. This includes online courses, workshops, and industry certifications.',
+  },
+  {
+    id: 'staff',
+    text: 'Did you have any people hired?',
+    subtext: 'Wages, salaries, subcontractor fees, and employer National Insurance contributions paid to staff or freelancers can be claimed as business expenses.',
+  },
+  {
+    id: 'subscriptions',
+    text: 'Did you buy any subscriptions or memberships?',
+    subtext: 'Fees for professional bodies, trade associations, or work-related software subscriptions such as accounting tools or industry publications are usually deductible.',
+  },
 ] as const;
 
 /* Font Awesome 6 Solid circle icon paths */
@@ -67,6 +99,7 @@ export function SelfEmployedExpenses({ state, update, goNext }: ScreenProps) {
         <div className="eq-screen">
           <div className="eq-heading">
             <p className="eq-title">{current.text}</p>
+            <p className="eq-subtitle">{current.subtext}</p>
           </div>
           <div className="eq-options">
             {OPTIONS.map(({ value, label, Icon }) => (
