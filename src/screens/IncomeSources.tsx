@@ -26,7 +26,7 @@ export function IncomeSources({ state, update, goNext }: ScreenProps) {
       <main className="step">
         <div className="step__inner">
           <header className="step__heading">
-            <h1 className="ds-h1">Where do you get your income from?</h1>
+            <h1 className="ds-h1">What are your sources of income?</h1>
             <p className="ds-subtitle">Choose all that apply</p>
           </header>
           <div className="options">

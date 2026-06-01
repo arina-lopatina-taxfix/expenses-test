@@ -9,7 +9,7 @@ export function AnnualIncome({ state, update, goNext }: ScreenProps) {
           <header className="step__heading">
             <h1 className="ds-h1">What is your annual income?</h1>
             <p className="ds-subtitle">
-              Enter your total income for 6 Apr 2024 - 5 Apr 2025 before tax. Can be an estimate.
+              Enter your estimated annual income for the tax year you declared
             </p>
           </header>
           <TextField

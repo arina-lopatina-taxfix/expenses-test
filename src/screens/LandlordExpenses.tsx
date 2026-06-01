@@ -4,7 +4,7 @@ import type { ScreenProps } from './types';
 const QUESTIONS = [
   {
     id: 'mortgage',
-    text: 'Did you pay mortgage on your rental property?',
+    text: 'Do you have a mortgage on your rental property?',
     subtext: 'The interest portion of your mortgage payments on a rental property may qualify for tax relief. Note that you can no longer deduct the full mortgage payment as an expense.',
     successMessage: 'Great, that means you can expense your mortgage interest and reduce your tax bill.',
   },
@@ -16,7 +16,7 @@ const QUESTIONS = [
   },
   {
     id: 'insurance',
-    text: 'Did you pay for property insurance?',
+    text: 'Did you pay for landlord insurance?',
     subtext: 'Landlord insurance premiums covering your rental property such as buildings, contents, or rent guarantee insurance are typically deductible expenses.',
     successMessage: 'Great, that means you can expense your property insurance premiums.',
   },
@@ -34,7 +34,7 @@ const QUESTIONS = [
   },
   {
     id: 'office',
-    text: 'Did you spend any money on stationery or any other related costs for managing your property?',
+    text: 'Did you have property management admin costs?',
     subtext: 'Day-to-day costs such as printing, postage, phone calls, or admin expenses directly related to managing your rental property can usually be claimed.',
     successMessage: 'Great, that means you can expense your stationery and property management costs.',
   },
