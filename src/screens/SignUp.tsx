@@ -26,7 +26,7 @@ const BREVO_FORM_HTML = `
       <form id="sib-form" method="POST" action="https://f261eed8.sibforms.com/serve/MUIFAOemvK9thqVxmi_0nOw0h_5iqdlmUB9nsoUk4fCMy5D3pfi-E21RovraavOT_XasAksNSWXqJjgiol5S2aC2Y2tx95jd2ZcWY1nYu7RaVQ9G67bjkJNwtbXkIoLbWLpLba-xwY4FYSWQfGwFqrh9oevNdBU1Fpmxodgb_15a3MeJWxAbEXKXsHamwo8FOboEoR2ebjI_o3b7" data-type="subscription">
         <div style="padding: 8px 0;">
           <div class="sib-form-block" style="font-family:Helvetica, sans-serif; font-size:27px; font-weight:700; text-align:center; color:#0C0B0A; background-color:transparent;">
-            <p>Your tax summary is almost ready</p>
+            <p>See how much you could claim back</p>
           </div>
         </div>
         <div style="padding: 8px 0;">
@@ -83,7 +83,7 @@ const BREVO_FORM_HTML = `
               <svg class="icon clickable__icon progress-indicator__icon sib-hide-loader-icon" viewBox="0 0 512 512">
                 <path d="M460.116 373.846l-20.823-12.022c-5.541-3.199-7.54-10.159-4.663-15.874 30.137-59.886 28.343-131.652-5.386-189.946-33.641-58.394-94.896-95.833-161.827-99.676C261.028 55.961 256 50.751 256 44.352V20.309c0-6.904 5.808-12.337 12.703-11.982 83.556 4.306 160.163 50.864 202.11 123.677 42.063 72.696 44.079 162.316 6.031 236.832-3.14 6.148-10.75 8.461-16.728 5.01z" />
               </svg>
-              Get my tax summary
+              Show me my estimate
             </button>
           </div>
         </div>
