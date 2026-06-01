@@ -22,13 +22,13 @@ const QUESTIONS = [
   },
   {
     id: 'materials',
-    text: 'Did you spend any money on materials to make your goods?',
+    text: 'Did you buy materials or supplies?',
     subtext: 'If you buy raw materials, packaging, or supplies to produce what you sell, these costs can usually be claimed as a business expense.',
     successMessage: 'Great, that means you can expense the materials you bought to make your goods.',
   },
   {
     id: 'insurance',
-    text: 'Did you buy insurance for your business?',
+    text: 'Did you buy business insurance?',
     subtext: 'Business insurance premiums such as public liability, professional indemnity, or contents insurance are typically allowable expenses.',
     successMessage: 'Great, that means you can expense your business insurance premiums.',
   },
@@ -40,7 +40,7 @@ const QUESTIONS = [
   },
   {
     id: 'staff',
-    text: 'Did you have any people hired?',
+    text: 'Did you hire any people?',
     subtext: 'Wages, salaries, subcontractor fees, and employer National Insurance contributions paid to staff or freelancers can be claimed as business expenses.',
     successMessage: 'Great, that means you can expense the wages and fees you paid to your staff or freelancers.',
   },

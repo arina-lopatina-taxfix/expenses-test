@@ -53,9 +53,8 @@ export function Results({ state, goNext }: ScreenProps) {
           </span>
         </h1>
         <p className="results__lede">
-          We compared your tax situation with others from people in a similar
-          income bracket and the same type of income. Here&apos;s what&apos;s on your
-          return — and what you might be missing. All numbers shown are
+          People in a similar situation to you claim this back on average.
+          Here&apos;s what you might be missing. All numbers shown are
           illustrative only.
         </p>
         {cache?.status === 'error' && (
