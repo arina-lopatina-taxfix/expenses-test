@@ -40,7 +40,49 @@ function isValidInput(body: unknown): body is AnalysisInput {
   return true;
 }
 
-const MODEL = process.env.GEMINI_MODEL || 'gemini-1.5-flash';
+const MODEL = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
+
+const RESPONSE_SCHEMA = {
+  type: 'object',
+  properties: {
+    totalAdditionalSavings: { type: 'string' },
+    profile: {
+      type: 'object',
+      properties: {
+        name: { type: 'string' },
+        role: { type: 'string' },
+        chips: { type: 'array', items: { type: 'string' } },
+      },
+      required: ['name', 'role', 'chips'],
+    },
+    improvements: {
+      type: 'array',
+      items: {
+        type: 'object',
+        properties: {
+          categoryId: { type: 'string' },
+          emoji: { type: 'string' },
+          title: { type: 'string' },
+          description: { type: 'string' },
+          advice: { type: 'string' },
+          deductibles: {
+            type: 'array',
+            items: {
+              type: 'object',
+              properties: {
+                label: { type: 'string' },
+                amount: { type: 'string' },
+              },
+              required: ['label', 'amount'],
+            },
+          },
+        },
+        required: ['categoryId', 'emoji', 'title', 'description', 'advice', 'deductibles'],
+      },
+    },
+  },
+  required: ['totalAdditionalSavings', 'profile', 'improvements'],
+};
 
 function resolveContext(input: AnalysisInput) {
   const incomeLabels = input.incomes.map((id) => INCOME_SOURCE_LABELS[id] ?? id);
@@ -178,7 +220,9 @@ export default async function handler(req: Request): Promise<Response> {
       body: JSON.stringify({
         contents: [{ role: 'user', parts: [{ text: buildPrompt(input) }] }],
         generationConfig: {
-          temperature: 0.6,
+          responseMimeType: 'application/json',
+          responseSchema: RESPONSE_SCHEMA,
+          temperature: 1,
         },
       }),
     });
