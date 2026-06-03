@@ -23,7 +23,7 @@ export function AnnualIncome({ state, update, goNext }: ScreenProps) {
                 annualIncome: e.target.value.replace(/[^0-9,]/g, ''),
               })
             }
-            containerStyle={{ width: 360 }}
+            containerStyle={{ width: '100%', maxWidth: 360 }}
           />
           <Button
             onClick={goNext}

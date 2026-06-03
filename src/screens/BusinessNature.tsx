@@ -8,7 +8,7 @@ export function BusinessNature({ state, update, goNext }: ScreenProps) {
         <div className="step__inner">
           <header className="step__heading">
             <h1 className="ds-h1">Tell us about nature of your business</h1>
-            <p className="ds-subtitle" style={{ width: 500 }}>
+            <p className="ds-subtitle" style={{ width: '100%', maxWidth: 500 }}>
               Please provide a brief description of your business activities and
               the services or products you offer
             </p>
@@ -17,7 +17,7 @@ export function BusinessNature({ state, update, goNext }: ScreenProps) {
             labelText="Description"
             value={state.businessNature}
             onChange={(e) => update({ businessNature: e.target.value })}
-            containerStyle={{ width: 420 }}
+            containerStyle={{ width: '100%', maxWidth: 420 }}
           />
           <Button
             onClick={goNext}
