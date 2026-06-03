@@ -40,7 +40,7 @@ function isValidInput(body: unknown): body is AnalysisInput {
   return true;
 }
 
-const MODEL = process.env.GEMINI_MODEL || 'gemini-2.0-flash';
+const MODEL = process.env.GEMINI_MODEL || 'gemini-1.5-flash';
 
 const RESPONSE_SCHEMA = {
   type: 'object',
