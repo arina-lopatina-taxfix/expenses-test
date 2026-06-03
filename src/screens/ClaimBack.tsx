@@ -1,8 +1,7 @@
 import { Button } from '../ds';
 import type { ScreenProps } from './types';
 
-const IMG_CHECKLIST =
-  'https://www.figma.com/api/mcp/asset/594e9f6d-6dbe-4d9a-82d4-b9bc6ec2fb45';
+const IMG_CHECKLIST = '/fonts/abc-rom/List tasks.png';
 
 export function ClaimBack(_: ScreenProps) {
   return (
