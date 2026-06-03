@@ -100,7 +100,7 @@ User context:
 - Business nature: ${input.businessNature || 'n/a'}
 - Personal details: ${ctx.personalDetailLabels || 'none'}
 
-Return JSON only, exactly matching the supplied schema.`;
+Return ONLY a raw JSON object with no markdown, no code fences, and no extra text. The JSON must exactly match the supplied schema.`;
 }
 
 const FALLBACK = (input: AnalysisInput): AnalysisResponse => {
@@ -178,7 +178,6 @@ export default async function handler(req: Request): Promise<Response> {
       body: JSON.stringify({
         contents: [{ role: 'user', parts: [{ text: buildPrompt(input) }] }],
         generationConfig: {
-          responseMimeType: 'application/json',
           temperature: 0.6,
         },
       }),
@@ -211,9 +210,12 @@ export default async function handler(req: Request): Promise<Response> {
   };
   const text = payload.candidates?.[0]?.content?.parts?.[0]?.text ?? '';
 
+  // Strip accidental markdown code fences Gemini sometimes adds
+  const cleanText = text.replace(/^```(?:json)?\s*/i, '').replace(/\s*```\s*$/i, '').trim();
+
   let parsed: AnalysisResponse;
   try {
-    parsed = JSON.parse(text) as AnalysisResponse;
+    parsed = JSON.parse(cleanText) as AnalysisResponse;
   } catch {
     return Response.json(
       {
