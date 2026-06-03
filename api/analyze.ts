@@ -255,7 +255,6 @@ export default async function handler(req: Request): Promise<Response> {
         contents: [{ role: 'user', parts: [{ text: buildPrompt(input) }] }],
         generationConfig: {
           responseMimeType: 'application/json',
-          responseSchema: RESPONSE_SCHEMA,
           temperature: 0.6,
         },
       }),
